@@ -1,57 +1,91 @@
-let multipleChoiceQuestions = [];
-let freeResponseQuestions = [];
-let audioResponseQuestions = [];
-let sheetMusicQuestions = [];
-let currentMultipleChoiceIndex = 0;
-let currentFreeResponseIndex = 0;
-let currentAudioResponseIndex = 0;
-let currentSheetMusicIndex = 0;
+let questions = {
+    multipleChoice: [],
+    freeResponse: [],
+    audioResponse: [],
+    sheetMusic: []
+};
+let currentIndex = {
+    multipleChoice: 0,
+    freeResponse: 0,
+    audioResponse: 0,
+    sheetMusic: 0
+};
 let correctAnswers = 0;
 let totalQuestions = 0;
 let startTime;
 
+document.addEventListener('DOMContentLoaded', () => {
+    // イベントハンドラーのマッピング
+    const eventMapping = {
+        'freeResponseSubmit': checkFreeResponseAnswer,
+        'audioResponseSubmit': checkAudioResponseAnswer,
+        'sheetMusicSubmit': checkSheetMusicAnswer,
+        'playAudio': playAudio
+    };
+
+    // 各ボタンにイベントリスナーを追加
+    Object.keys(eventMapping).forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('click', eventMapping[id]);
+        }
+    });
+
+    // 質問データをロード
+    loadQuestions();
+});
+
+// 質問データのロード
 async function loadQuestions() {
+    const questionTypes = ['multipleChoice', 'freeResponse', 'audioResponse', 'sheetMusic'];
+    const fetchPromises = questionTypes.map(type => fetchQuestions(`${type}Questions.json`));
+    const results = await Promise.all(fetchPromises);
+    window.questions = {}; // グローバル変数として保持
+    questionTypes.forEach((type, index) => {
+        window.questions[type] = results[index];
+    });
+    window.totalQuestions = Object.values(window.questions).flat().length;
+    window.startTime = new Date();
+}
+
+// 質問データのフェッチ
+async function fetchQuestions(url) {
     try {
-        const multipleChoiceResponse = await fetch('multipleChoiceQuestions.json');
-        multipleChoiceQuestions = await multipleChoiceResponse.json();
-        const freeResponseResponse = await fetch('freeResponseQuestions.json');
-        freeResponseQuestions = await freeResponseResponse.json();
-        const audioResponseResponse = await fetch('audioResponseQuestions.json');
-        audioResponseQuestions = await audioResponseResponse.json();
-        const sheetMusicResponse = await fetch('sheetMusicQuestions.json');
-        sheetMusicQuestions = await sheetMusicResponse.json();
-        totalQuestions = multipleChoiceQuestions.length + freeResponseQuestions.length + audioResponseQuestions.length + sheetMusicQuestions.length;
-        startTime = new Date();
-        loadMultipleChoiceQuestion();
-        loadFreeResponseQuestion();
-        loadAudioResponseQuestion();
-        loadSheetMusicQuestion();
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+        return await response.json();
     } catch (error) {
-        console.error('Error loading questions:', error);
+        console.error(error);
+        return [];
     }
 }
 
-function loadQuestion(question, questionTextId, answerFieldId = null, resultFieldId = null) {
-    document.getElementById(questionTextId).textContent = question.question;
-    if (answerFieldId) {
-        document.getElementById(answerFieldId).value = ''; // フィールドをクリア
-    }
-    if (resultFieldId) {
-        document.getElementById(resultFieldId).textContent = ''; // 結果をクリア
+// タブに対応する質問のロード
+function loadQuestion(type) {
+    switch(type){
+        case 'multiple-choice':
+            loadMultipleChoiceQuestion();
+            break;
+        case 'free-response':
+            loadFreeResponseQuestion();
+            break;
+        case 'audio-response':
+            loadAudioResponseQuestion();
+            break;
+        case 'sheet-music':
+            loadSheetMusicQuestion();
+            break;
+        default:
+            console.warn(`Unknown question type: ${type}`);
     }
 }
 
-function updateQuestionNumber(currentIndex, totalQuestions, currentNumberId, totalNumberId) {
-    document.getElementById(currentNumberId).textContent = currentIndex + 1;
-    document.getElementById(totalNumberId).textContent = totalQuestions;
-}
-
-// Multiple Choice Quiz
+// 各質問タイプのロード関数（具体的な実装を追加してください）
 function loadMultipleChoiceQuestion() {
-    if (currentMultipleChoiceIndex < multipleChoiceQuestions.length) {
-        const currentQuestion = multipleChoiceQuestions[currentMultipleChoiceIndex];
-        loadQuestion(currentQuestion, 'questionText');
-        updateQuestionNumber(currentMultipleChoiceIndex, multipleChoiceQuestions.length, 'currentQuestionNumber', 'totalQuestions');
+    if (currentIndex.multipleChoice < questions.multipleChoice.length) {
+        const currentQuestion = questions.multipleChoice[currentIndex.multipleChoice];
+        loadQuestionContent(currentQuestion, 'questionText');
+        updateQuestionNumber(currentIndex.multipleChoice, questions.multipleChoice.length, 'currentQuestionNumber', 'totalQuestions');
         const buttons = document.querySelectorAll('#options button');
         buttons.forEach((button, index) => {
             button.textContent = currentQuestion.options[index];
@@ -64,23 +98,23 @@ function loadMultipleChoiceQuestion() {
 
 function checkMultipleChoiceAnswer(button) {
     const answer = button.getAttribute('data-answer');
-    const currentQuestion = multipleChoiceQuestions[currentMultipleChoiceIndex];
+    const currentQuestion = questions.multipleChoice[currentIndex.multipleChoice];
     const resultElement = document.getElementById('multipleChoiceResult');
     checkAnswer(answer, currentQuestion.correctAnswer, resultElement);
     setTimeout(nextMultipleChoiceQuestion, 2000); // 2秒後に次の質問に遷移
 }
 
 function nextMultipleChoiceQuestion() {
-    currentMultipleChoiceIndex++;
+    currentIndex.multipleChoice++;
     loadMultipleChoiceQuestion();
 }
 
 // Free Response Quiz
 function loadFreeResponseQuestion() {
-    if (currentFreeResponseIndex < freeResponseQuestions.length) {
-        const currentQuestion = freeResponseQuestions[currentFreeResponseIndex];
-        loadQuestion(currentQuestion, 'freeResponseQuestion', 'freeResponseAnswer', 'freeResponseResult');
-        updateQuestionNumber(currentFreeResponseIndex, freeResponseQuestions.length, 'currentFreeResponseQuestionNumber', 'totalFreeResponseQuestions');
+    if (currentIndex.freeResponse < questions.freeResponse.length) {
+        const currentQuestion = questions.freeResponse[currentIndex.freeResponse];
+        loadQuestionContent(currentQuestion, 'freeResponseQuestion', 'freeResponseAnswer', 'freeResponseResult');
+        updateQuestionNumber(currentIndex.freeResponse, questions.freeResponse.length, 'currentFreeResponseQuestionNumber', 'totalFreeResponseQuestions');
     } else {
         showEndScreen();
     }
@@ -88,23 +122,23 @@ function loadFreeResponseQuestion() {
 
 function checkFreeResponseAnswer() {
     const answer = document.getElementById('freeResponseAnswer').value;
-    const currentQuestion = freeResponseQuestions[currentFreeResponseIndex];
+    const currentQuestion = questions.freeResponse[currentIndex.freeResponse];
     const resultElement = document.getElementById('freeResponseResult');
     checkAnswer(answer, currentQuestion.correctAnswer, resultElement);
     setTimeout(nextFreeResponseQuestion, 2000); // 2秒後に次の質問に遷移
 }
 
 function nextFreeResponseQuestion() {
-    currentFreeResponseIndex++;
+    currentIndex.freeResponse++;
     loadFreeResponseQuestion();
 }
 
 // Audio Response Quiz
 function loadAudioResponseQuestion() {
-    if (currentAudioResponseIndex < audioResponseQuestions.length) {
-        const currentQuestion = audioResponseQuestions[currentAudioResponseIndex];
-        loadQuestion(currentQuestion, 'audioResponseQuestion', 'audioResponseAnswer', 'audioResponseResult');
-        updateQuestionNumber(currentAudioResponseIndex, audioResponseQuestions.length, 'currentAudioResponseQuestionNumber', 'totalAudioResponseQuestions');
+    if (currentIndex.audioResponse < questions.audioResponse.length) {
+        const currentQuestion = questions.audioResponse[currentIndex.audioResponse];
+        loadQuestionContent(currentQuestion, 'audioResponseQuestion', 'audioResponseAnswer', 'audioResponseResult');
+        updateQuestionNumber(currentIndex.audioResponse, questions.audioResponse.length, 'currentAudioResponseQuestionNumber', 'totalAudioResponseQuestions');
     } else {
         showEndScreen();
     }
@@ -112,29 +146,29 @@ function loadAudioResponseQuestion() {
 
 function checkAudioResponseAnswer() {
     const answer = document.getElementById('audioResponseAnswer').value;
-    const currentQuestion = audioResponseQuestions[currentAudioResponseIndex];
+    const currentQuestion = questions.audioResponse[currentIndex.audioResponse];
     const resultElement = document.getElementById('audioResponseResult');
     checkAnswer(answer, currentQuestion.correctAnswer, resultElement);
     setTimeout(nextAudioResponseQuestion, 2000); // 2秒後に次の質問に遷移
 }
 
 function nextAudioResponseQuestion() {
-    currentAudioResponseIndex++;
+    currentIndex.audioResponse++;
     loadAudioResponseQuestion();
 }
 
 function playAudio() {
-    const currentQuestion = audioResponseQuestions[currentAudioResponseIndex];
+    const currentQuestion = questions.audioResponse[currentIndex.audioResponse];
     const audio = new Audio(currentQuestion.audio);
     audio.play();
 }
 
 // Sheet Music Quiz
 function loadSheetMusicQuestion() {
-    if (currentSheetMusicIndex < sheetMusicQuestions.length) {
-        const currentQuestion = sheetMusicQuestions[currentSheetMusicIndex];
-        loadQuestion(currentQuestion, 'sheetMusicQuestion', 'sheetMusicAnswer', 'sheetMusicResult');
-        updateQuestionNumber(currentSheetMusicIndex, sheetMusicQuestions.length, 'currentSheetMusicQuestionNumber', 'totalSheetMusicQuestions');
+    if (currentIndex.sheetMusic < questions.sheetMusic.length) {
+        const currentQuestion = questions.sheetMusic[currentIndex.sheetMusic];
+        loadQuestionContent(currentQuestion, 'sheetMusicQuestion', 'sheetMusicAnswer', 'sheetMusicResult');
+        updateQuestionNumber(currentIndex.sheetMusic, questions.sheetMusic.length, 'currentSheetMusicQuestionNumber', 'totalSheetMusicQuestions');
         const sheetMusicImage = document.getElementById('sheetMusicImage');
         sheetMusicImage.src = currentQuestion.image;
     } else {
@@ -144,26 +178,27 @@ function loadSheetMusicQuestion() {
 
 function checkSheetMusicAnswer() {
     const answer = document.getElementById('sheetMusicAnswer').value;
-    const currentQuestion = sheetMusicQuestions[currentSheetMusicIndex];
+    const currentQuestion = questions.sheetMusic[currentIndex.sheetMusic];
     const resultElement = document.getElementById('sheetMusicResult');
     checkAnswer(answer, currentQuestion.correctAnswer, resultElement);
     setTimeout(nextSheetMusicQuestion, 2000); // 2秒後に次の質問に遷移
 }
 
 function nextSheetMusicQuestion() {
-    currentSheetMusicIndex++;
+    currentIndex.sheetMusic++;
     loadSheetMusicQuestion();
 }
 
 // Common Functions
 function checkAnswer(answer, correctAnswer, resultElement) {
     if (answer === correctAnswer) {
-        resultElement.textContent = '正解です！';
-        resultElement.style.color = 'green';
-        correctAnswers++;
+        resultElement.textContent = '正解！';
+        resultElement.classList.add('text-success');
+        resultElement.classList.remove('text-danger');
     } else {
-        resultElement.textContent = '不正解です。';
-        resultElement.style.color = 'red';
+        resultElement.textContent = '不正解';
+        resultElement.classList.add('text-danger');
+        resultElement.classList.remove('text-success');
     }
     setTimeout(() => {
         resultElement.textContent = '';
@@ -175,7 +210,6 @@ function showEndScreen() {
     const timeTaken = Math.floor((endTime - startTime) / 1000); // 経過時間を秒単位で計算
     const resultText = `正解数: ${correctAnswers} / ${totalQuestions}<br>経過時間: ${timeTaken} 秒`;
     document.getElementById('quizResult').innerHTML = resultText;
+    document.getElementById('quiz-end').style.display = 'block';
+    document.getElementById('quiz-content').style.display = 'none';
 }
-
-// 初期の質問をロード
-loadQuestions();
