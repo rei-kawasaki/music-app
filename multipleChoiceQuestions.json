@@ -1,0 +1,17 @@
+[
+    {
+        "question": "日本の首都はどこですか？",
+        "options": ["大阪", "京都", "東京", "福岡"],
+        "correctAnswer": "東京"
+    },
+    {
+        "question": "富士山の高さはどれくらいですか？",
+        "options": ["3,776m", "2,500m", "4,000m", "3,000m"],
+        "correctAnswer": "3,776m"
+    },
+    {
+        "question": "日本の国花は何ですか？",
+        "options": ["梅", "桜", "菊", "藤"],
+        "correctAnswer": "桜"
+    }
+]

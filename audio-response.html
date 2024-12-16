@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音階クイズ</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">音楽教育アプリケーション</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="multiple-choice.html">4択クイズ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="free-response.html">自由記述</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="audio-response.html">音階クイズ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="sheet-music.html">楽譜クイズ</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5 p-4 bg-white shadow rounded">
+        <h1>音階クイズ</h1>
+        <p id="audioResponseQuestion">次の音階を聞いて答えてください:</p>
+        <p id="audioResponseQuestionNumber">問題 <span id="currentAudioResponseQuestionNumber">1</span> / <span id="totalAudioResponseQuestions">1</span></p>
+        <button class="btn btn-primary" onclick="playAudio()">再生</button>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="audioResponseAnswer" placeholder="回答を入力">
+        </div>
+        <button class="btn btn-primary" onclick="checkAudioResponseAnswer()">送信</button>
+        <p class="result font-weight-bold" id="audioResponseResult"></p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        loadAudioResponseQuestion();
+    </script>
+</body>
+</html>
