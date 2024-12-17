@@ -14,48 +14,27 @@ let correctAnswers = 0;
 let totalQuestions = 0;
 let startTime;
 
-document.addEventListener('DOMContentLoaded', () => {
-    // イベントハンドラーのマッピング
-    const eventMapping = {
-        'freeResponseSubmit': checkFreeResponseAnswer,
-        'audioResponseSubmit': checkAudioResponseAnswer,
-        'sheetMusicSubmit': checkSheetMusicAnswer,
-        'playAudio': playAudio
-    };
-
-    // 各ボタンにイベントリスナーを追加
-    Object.keys(eventMapping).forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.addEventListener('click', eventMapping[id]);
-        }
-    });
-
-    // 質問データをロード
-    loadQuestions();
-});
 
 // 質問データのロード
-async function loadQuestions() {
+function loadQuestions() {
     const questionTypes = ['multipleChoice', 'freeResponse', 'audioResponse', 'sheetMusic'];
-    const fetchPromises = questionTypes.map(type => fetchQuestions(`${type}Questions.json`));
-    const results = await Promise.all(fetchPromises);
-    window.questions = {}; // グローバル変数として保持
-    questionTypes.forEach((type, index) => {
-        window.questions[type] = results[index];
+    questionTypes.forEach(type => {
+        questions[type] = fetchQuestions(`${type}Questions.json`);
     });
-    window.totalQuestions = Object.values(window.questions).flat().length;
-    window.startTime = new Date();
+    totalQuestions = Object.values(questions).flat().length;
+    startTime = new Date();
 }
 
 // 質問データのフェッチ
-async function fetchQuestions(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Failed to fetch ${url}`);
-        return await response.json();
-    } catch (error) {
-        console.error(error);
+function fetchQuestions(url) {
+    const request = new XMLHttpRequest();
+    request.open('GET', url, false); // 同期リクエスト
+    request.send(null);
+
+    if (request.status === 200) {
+        return JSON.parse(request.responseText);
+    } else {
+        console.error(`Failed to fetch ${url}`);
         return [];
     }
 }
@@ -84,12 +63,17 @@ function loadQuestion(type) {
 function loadMultipleChoiceQuestion() {
     if (currentIndex.multipleChoice < questions.multipleChoice.length) {
         const currentQuestion = questions.multipleChoice[currentIndex.multipleChoice];
-        loadQuestionContent(currentQuestion, 'questionText');
+        document.getElementById('questionText').innerText = currentQuestion.text;
         updateQuestionNumber(currentIndex.multipleChoice, questions.multipleChoice.length, 'currentQuestionNumber', 'totalQuestions');
-        const buttons = document.querySelectorAll('#options button');
-        buttons.forEach((button, index) => {
-            button.textContent = currentQuestion.options[index];
-            button.setAttribute('data-answer', currentQuestion.options[index]);
+        const options = document.getElementById('options');
+        options.innerHTML = '';
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.className = 'btn btn-primary m-1';
+            button.innerText = option;
+            button.setAttribute('data-answer', option);
+            button.onclick = () => checkMultipleChoiceAnswer(button);
+            options.appendChild(button);
         });
     } else {
         showEndScreen();
@@ -99,6 +83,10 @@ function loadMultipleChoiceQuestion() {
 function checkMultipleChoiceAnswer(button) {
     const answer = button.getAttribute('data-answer');
     const currentQuestion = questions.multipleChoice[currentIndex.multipleChoice];
+    if (!currentQuestion) {
+        console.error('Current question is undefined');
+        return;
+    }
     const resultElement = document.getElementById('multipleChoiceResult');
     checkAnswer(answer, currentQuestion.correctAnswer, resultElement);
     setTimeout(nextMultipleChoiceQuestion, 2000); // 2秒後に次の質問に遷移
@@ -213,3 +201,5 @@ function showEndScreen() {
     document.getElementById('quiz-end').style.display = 'block';
     document.getElementById('quiz-content').style.display = 'none';
 }
+
+loadQuestions();
