@@ -1,0 +1,32 @@
+{
+  "multiple": [
+    {
+      "question": "音符の種類で最も長い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
+      "answer":  "全音符"
+    },
+    {
+      "question": "音符の種類で最も短い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "32分音符"],
+      "answer": "32分音符"
+    }
+  ],
+  "free": [
+    {
+      "question": "4分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "answer": "4"
+    }
+  ],
+  "audio": [
+    {
+      "audioFile": "audio/C.mp3",
+      "answer": "C"
+    }
+  ],
+  "sheet": [
+    {
+      "imageFile": "images/C.jpg",
+      "answer": "C"
+    }
+  ]
+}
