@@ -15,87 +15,74 @@
         </header>
 
         <nav>
-            <ul class="nav nav-pills mb-4" id="quiz-tabs" role="tablist">
+            <ul class="nav nav-pills mb-5" id="quiz-tabs" role="tablist">
+                <!-- タブ項目 -->
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="quiz-tab-multiple" 
                             data-bs-toggle="pill" data-bs-target="#quiz-content-multiple" 
                             type="button" role="tab" aria-controls="quiz-content-multiple" 
-                            aria-selected="true">
-                        4択クイズ
-                    </button>
+                            aria-selected="true">4択クイズ</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="quiz-tab-free" 
                             data-bs-toggle="pill" data-bs-target="#quiz-content-free" 
                             type="button" role="tab" aria-controls="quiz-content-free" 
-                            aria-selected="false">
-                        自由記述
-                    </button>
+                            aria-selected="false">自由記述</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="quiz-tab-audio" 
                             data-bs-toggle="pill" data-bs-target="#quiz-content-audio" 
                             type="button" role="tab" aria-controls="quiz-content-audio" 
-                            aria-selected="false">
-                        音階当て
-                    </button>
+                            aria-selected="false">音階当て</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="quiz-tab-sheet" 
                             data-bs-toggle="pill" data-bs-target="#quiz-content-sheet" 
                             type="button" role="tab" aria-controls="quiz-content-sheet" 
-                            aria-selected="false">
-                        楽譜クイズ
-                    </button>
+                            aria-selected="false">楽譜クイズ</button>
                 </li>
             </ul>
         </nav>
 
-        <main>
+        <main style="max-width: 90%; margin: 0 auto;">
             <div class="tab-content" id="quiz-contents">
                 <!-- 4択クイズ -->
-                <div class="tab-pane fade show active" id="quiz-content-multiple" 
-                     role="tabpanel" aria-labelledby="quiz-tab-multiple">
-                    <section class="quiz-container">
+                <div class="tab-pane fade show active" id="quiz-content-multiple" role="tabpanel" aria-labelledby="quiz-tab-multiple">
+                    <section class="quiz-container" style="max-width: 100%;">
                         <h2 class="h4 mb-4">4択クイズ</h2>
                         <p id="quiz-question-multiple" class="mb-4"></p>
-                        <div id="quiz-choices-multiple" class="d-grid gap-3 mb-4"></div>
-                        <button class="btn btn-primary" id="quiz-submit-multiple" disabled>回答する</button>
+                        <div id="quiz-choices-multiple" class="mb-4"></div>
+                        <button class="btn btn-primary" id="quiz-submit-multiple">回答する</button>
                     </section>
                 </div>
                 
-                <div class="tab-pane fade" id="quiz-content-free" 
-                     role="tabpanel" aria-labelledby="quiz-tab-free">
-                    <section class="quiz-container">
+                <!-- 他のクイズセクション (自由記述、音階当て、楽譜) -->
+                <div class="tab-pane fade" id="quiz-content-free" role="tabpanel" aria-labelledby="quiz-tab-free">
+                    <section class="quiz-container" style="max-width: 100%;">
                         <h2 class="h4 mb-4">自由記述クイズ</h2>
                         <p id="quiz-question-free" class="mb-4"></p>
-                        <input type="text" class="form-control mb-4" id="quiz-answer-free" 
-                               placeholder="回答を入力してください">
-                        <button class="btn btn-primary" id="quiz-submit-free" disabled>回答する</button>
+                        <input type="text" class="form-control mb-2 w-50" id="quiz-answer-free" placeholder="回答を入力してください">
+                        <button class="btn btn-primary" id="quiz-submit-free">回答する</button>
                     </section>
                 </div>
                 
-                <div class="tab-pane fade" id="quiz-content-audio" 
-                     role="tabpanel" aria-labelledby="quiz-tab-audio">
-                    <section class="quiz-container">
+                <div class="tab-pane fade" id="quiz-content-audio" role="tabpanel" aria-labelledby="quiz-tab-audio">
+                    <section class="quiz-container" style="max-width: 100%;">
                         <h2 class="h4 mb-4">音階当てクイズ</h2>
                         <button class="btn btn-secondary mb-4" id="quiz-play-audio">
                             <i class="bi bi-play-fill me-2"></i>音を再生
                         </button>
-                        <input type="text" class="form-control mb-4" id="quiz-answer-audio" 
-                               placeholder="音階を入力してください">
-                        <button class="btn btn-primary" id="quiz-submit-audio" disabled>回答する</button>
+                        <input type="text" class="form-control mb-4 w-50" id="quiz-answer-audio" placeholder="音階を入力してください">
+                        <button class="btn btn-primary" id="quiz-submit-audio">回答する</button>
                     </section>
                 </div>
                 
-                <div class="tab-pane fade" id="quiz-content-sheet" 
-                     role="tabpanel" aria-labelledby="quiz-tab-sheet">
+                <div class="tab-pane fade" id="quiz-content-sheet" role="tabpanel" aria-labelledby="quiz-tab-sheet">
                     <section class="quiz-container">
                         <h2 class="h4 mb-4">楽譜クイズ</h2>
                         <img id="quiz-image-sheet" class="img-fluid mb-4" src="" alt="楽譜">
-                        <input type="text" class="form-control mb-4" id="quiz-answer-sheet" 
-                               placeholder="楽譜を読み取って入力してください">
-                        <button class="btn btn-primary" id="quiz-submit-sheet" disabled>回答する</button>
+                        <input type="text" class="form-control mb-4 w-50" id="quiz-answer-sheet" placeholder="楽譜を読み取って入力してください">
+                        <button class="btn btn-primary" id="quiz-submit-sheet">回答する</button>
                     </section>
                 </div>
             </div>
@@ -103,6 +90,108 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        let quizData = null;
+        let selectedChoice = null;
+
+        // 初期化処理
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initQuiz();
+                setupEventListeners();
+            } catch (error) {
+                console.error('初期化に失敗:', error);
+            }
+        });
+
+        // クイズデータの取得
+        async function initQuiz() {
+            const response = await fetch('quiz-data.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            quizData = await response.json();
+            displayAllQuizzes();
+        }
+
+        // イベントリスナーの設定
+        function setupEventListeners() {
+            // 各クイズタイプの送信ボタンに対する処理
+            document.querySelectorAll('[id^="quiz-submit"]').forEach(button => {
+                button.addEventListener('click', () => submitAnswer(button.id.replace('quiz-submit-', '')));
+            });
+            
+            // 音声再生ボタンの処理
+            document.getElementById('quiz-play-audio').addEventListener('click', playAudio);
+        }
+
+        // 全てのクイズを表示
+        function displayAllQuizzes() {
+            ['multiple', 'free', 'audio', 'sheet'].forEach(displayQuiz);
+        }
+
+        // 各クイズの表示処理
+        function displayQuiz(type) {
+            if (!quizData?.[type]?.[0]) return;
+
+            const quiz = quizData[type][0];
+            const questionElement = document.getElementById(`quiz-question-${type}`);
+            if (!questionElement) return;
+
+            questionElement.textContent = quiz.question;
+            
+            if (type === 'multiple') {
+                // 4択クイズの選択肢を表示
+                const choicesDiv = document.getElementById(`quiz-choices-${type}`);
+                choicesDiv.innerHTML = '';
+                quiz.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.className = 'btn btn-outline-primary btn-sm';
+                    button.textContent = choice;
+                    button.addEventListener('click', () => handleChoiceSelection(button, choice));
+                    choicesDiv.appendChild(button);
+                });
+            } else if (type === 'audio') {
+                document.getElementById('quiz-play-audio').dataset.audioFile = quiz.audioFile;
+            } else if (type === 'sheet') {
+                document.getElementById('quiz-image-sheet').src = quiz.imageFile;
+            }
+        }
+
+        // 選択肢が選ばれた際の処理
+        function handleChoiceSelection(button, choice) {
+            document.querySelectorAll('#quiz-choices-multiple button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            selectedChoice = choice;
+        }
+
+        // 回答を提出
+        function submitAnswer(type) {
+            const quiz = quizData[type][0];
+            let isCorrect = false;
+            let userAnswer;
+
+            if (type === 'multiple') {
+                isCorrect = selectedChoice === quiz.answer;
+            } else {
+                // 自由記述、音階、楽譜の場合
+                const answerElement = document.getElementById(`quiz-answer-${type}`);
+                if (answerElement) {
+                    userAnswer = answerElement.value.trim();
+                    isCorrect = userAnswer === quiz.answer;
+                }
+            }
+            
+            // 結果を表示
+            alert(isCorrect ? '正解です！' : '不正解です。もう一度試してください。');
+        }
+
+        // 音声の再生
+        function playAudio() {
+            const audioFile = document.getElementById('quiz-play-audio').dataset.audioFile;
+            const audio = new Audio(audioFile);
+            audio.play();
+        }
+    </script>
 </body>
 </html>

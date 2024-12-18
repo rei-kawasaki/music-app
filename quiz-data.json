@@ -3,7 +3,12 @@
     {
       "question": "音符の種類で最も長い音符は？",
       "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
-      "answer": 0
+      "answer":  "全音符"
+    },
+    {
+      "question": "音符の種類で最も短い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "32分音符"],
+      "answer": "32分音符"
     }
   ],
   "free": [
@@ -14,14 +19,14 @@
   ],
   "audio": [
     {
-      "audioFile": "audio/do.mp3",
-      "answer": "ド"
+      "audioFile": "audio/C.mp3",
+      "answer": "C"
     }
   ],
   "sheet": [
     {
-      "imageFile": "images/sheet1.png",
-      "answer": "ドレミ"
+      "imageFile": "images/C.jpg",
+      "answer": "C"
     }
   ]
 }
