@@ -140,10 +140,10 @@
 
             container.innerHTML = ''; // 既存のクイズをクリア
 
-            quizzes.forEach((quiz, index) => {
             const section = document.createElement('section');
             section.className = 'quiz-container mb-4';
             section.style.maxWidth = '100%';
+            quizzes.forEach((quiz, index) => {
 
             const questionElement = document.createElement('p');
             questionElement.id = `quiz-question-${type}-${index}`;
@@ -160,18 +160,21 @@
                 const button = document.createElement('button');
                 button.className = 'btn btn-outline-primary btn-sm me-2';
                 button.textContent = choice;
+                // 選択肢がクリックされたときの処理を追加
                 button.addEventListener('click', () => handleChoiceSelection(button, choice));
                 choicesDiv.appendChild(button);
                 });
                 section.appendChild(choicesDiv);
             } else if (type === 'audio') {
+                // 音声クイズの再生ボタンを表示
                 const playButton = document.createElement('button');
                 playButton.className = 'quiz-play-audio btn btn-secondary mb-4';
                 playButton.innerHTML = '<i class="bi bi-play-fill me-2"></i>音を再生';
                 playButton.dataset.audioFile = quiz.audioFile;
+                // 再生ボタンがクリックされたときの処理を追加
                 playButton.addEventListener('click', playAudio);
                 section.appendChild(playButton);
-
+            } else if (type === 'free') {
                 const answerInput = document.createElement('input');
                 answerInput.type = 'text';
                 answerInput.className = 'form-control mb-4 w-50';
@@ -201,15 +204,16 @@
                 section.appendChild(answerInput);
             }
 
+            });
+
             const submitButton = document.createElement('button');
             submitButton.className = 'btn btn-primary';
-            submitButton.id = `quiz-submit-${type}-${index}`;
+            submitButton.id = `quiz-submit-${type}`;
             submitButton.textContent = '回答する';
-            submitButton.addEventListener('click', () => submitAnswer(type, index));
+            submitButton.addEventListener('click', () => submitAnswer(type));
             section.appendChild(submitButton);
 
             container.appendChild(section);
-            });
         }
 
         // 選択肢が選ばれた際の処理
@@ -227,24 +231,34 @@
         }
 
         // 回答を提出
-        function submitAnswer(type, index) {
-            const quiz = quizData[type][index];
-            let isCorrect = false;
-            let userAnswer;
+        function submitAnswer(type) {
+            const quizElements = document.querySelectorAll(`[id^="quiz-question-${type}-"]`);
+            let correctCount = 0;
+            let totalCount = quizElements.length;
 
-            if (type === 'multiple') {
-            isCorrect = selectedChoice === quiz.answer;
-            } else {
-            // 自由記述、音階、楽譜の場合
-            const answerElement = document.getElementById(`quiz-answer-${type}-${index}`);
-            if (answerElement) {
-                userAnswer = answerElement.value.trim();
-                isCorrect = userAnswer === quiz.answer;
-            }
-            }
-            
+            quizElements.forEach((quizElement, index) => {
+                const quiz = quizData[type][index];
+                let isCorrect = false;
+                let userAnswer;
+
+                if (type === 'multiple') {
+                    isCorrect = selectedChoice === quiz.answer;
+                } else {
+                    // 自由記述、音階、楽譜の場合
+                    const answerElement = document.getElementById(`quiz-answer-${type}-${index}`);
+                    if (answerElement) {
+                        userAnswer = answerElement.value.trim();
+                        isCorrect = userAnswer === quiz.answer;
+                    }
+                }
+
+                if (isCorrect) {
+                    correctCount++;
+                }
+            });
+
             // 結果を表示
-            alert(isCorrect ? '正解です！' : '不正解です。もう一度試してください。');
+            alert(`正解数: ${correctCount} / ${totalCount}`);
         }
 
     // 音声を再生する関数
