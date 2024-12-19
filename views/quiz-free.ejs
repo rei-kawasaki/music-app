@@ -26,6 +26,10 @@
         }
     });
 
+    const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
+    let quizData = null;
+    let correctAnswers = {};
+
     async function initQuiz() {
         try {
             const response = await fetch('/quiz-data.json');
@@ -45,91 +49,56 @@
 
     function setupEventListeners() {
         const submitButton = document.getElementById('quiz-submit');
-        if (submitButton) {
+        if (submitButton && !submitButton.dataset.listenerAdded) {
             submitButton.addEventListener('click', submitAnswers);
+            submitButton.dataset.listenerAdded = 'true';
         }
     }
 
-</script>
-    <script>
-        let quizData = null;
-        let answers = {};
+    function displayQuizzes() {
+        if (!quizData?.free) return;
 
-        // 初期化処理
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initQuiz();
-                setupEventListeners();
-            } catch (error) {
-                console.error('初期化に失敗:', error);
-            }
+        const quizzes = getRandomQuizzes(quizData.free, QUIZ_COUNT);
+        const container = document.getElementById('quiz-content');
+        if (!container) return;
+
+        container.innerHTML = ''; // 既存のクイズをクリア
+
+        quizzes.forEach((quiz, index) => {
+            const section = document.createElement('section');
+            section.className = 'mb-4';
+
+            const questionElement = document.createElement('p');
+            questionElement.className = 'mb-4';
+            questionElement.textContent = quiz.question;
+            section.appendChild(questionElement);
+
+            const answerInput = document.createElement('input');
+            answerInput.type = 'text';
+            answerInput.className = 'form-control mb-4 w-50';
+            answerInput.id = `quiz-answer-${index}`;
+            answerInput.placeholder = '回答を入力してください';
+            section.appendChild(answerInput);
+
+            container.appendChild(section);
+
+            correctAnswers[index] = quiz.correctAnswer;
         });
+    }
 
-        // クイズデータの取得
-        async function initQuiz() {
-            const response = await fetch('quiz-data.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            quizData = await response.json();
-            displayQuizzes();
-        }
+    function submitAnswers() {
+        let correctCount = 0;
 
-        // イベントリスナーの設定
-        function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit');
-            if (!submitButton.dataset.listenerAdded) {
-                submitButton.addEventListener('click', submitAnswers);
-                submitButton.dataset.listenerAdded = 'true';
+        for (let index = 0; index < QUIZ_COUNT; index++) {
+            const answerInput = document.getElementById(`quiz-answer-${index}`);
+            if (answerInput && answerInput.value.trim() === correctAnswers[index]) {
+                correctCount++;
             }
         }
 
-        // クイズの表示処理
-        function displayQuizzes() {
-            if (!quizData?.free) return;
-
-            const quizzes = quizData.free;
-            const container = document.getElementById('quiz-content');
-            if (!container) return;
-
-            container.innerHTML = ''; // 既存のクイズをクリア
-
-            quizzes.forEach((quiz, index) => {
-                const section = document.createElement('section');
-                section.className = 'mb-4';
-
-                const questionElement = document.createElement('p');
-                questionElement.className = 'mb-4';
-                questionElement.textContent = quiz.question;
-                section.appendChild(questionElement);
-
-                const answerInput = document.createElement('input');
-                answerInput.type = 'text';
-                answerInput.className = 'form-control mb-4 w-50';
-                answerInput.id = `quiz-answer-${index}`;
-                answerInput.placeholder = '回答を入力してください';
-                section.appendChild(answerInput);
-
-                container.appendChild(section);
-            });
-        }
-
-        // 回答を提出
-        function submitAnswers() {
-            const quizzes = quizData.free;
-            let correctCount = 0;
-
-            quizzes.forEach((quiz, index) => {
-                const answerInput = document.getElementById(`quiz-answer-${index}`);
-                console.log('回答:', answerInput.value);
-                if (answerInput && answerInput.value.trim() === quiz.correctAnswer) {
-                    correctCount++;
-                }
-            });
-
-            // 結果を表示
-            alert(`正解数: ${correctCount} / ${quizzes.length}`);
-        }
-    </script>
+        // 結果を表示
+        alert(`正解数: ${correctCount} / ${QUIZ_COUNT}`);
+    }
+</script>
 </body>
 </html>

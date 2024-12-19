@@ -4,7 +4,7 @@
 <body>
     <div class="container mt-5">
         <%- include('partials/header') %>
-        <%- include('partials/nav')%>
+        <%- include('partials/nav') %>
 
         <main style="max-width: 90%; margin: 0 auto;">
             <section class="quiz-container" style="max-width: 100%;">
@@ -26,6 +26,10 @@
         }
     });
 
+    const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
+    let quizData = null;
+    let correctAnswers = {};
+
     async function initQuiz() {
         try {
             const response = await fetch('/quiz-data.json');
@@ -45,95 +49,79 @@
 
     function setupEventListeners() {
         const submitButton = document.getElementById('quiz-submit');
-        if (submitButton) {
+        if (submitButton && !submitButton.dataset.listenerAdded) {
             submitButton.addEventListener('click', submitAnswers);
+            submitButton.dataset.listenerAdded = 'true';
         }
     }
 
-</script>
-    <script>
-        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
-        let quizData = null; // initQuiz()でjsonからクイズデータを読み込む
-        let inputAnswers = {}; // 入力された回答を保持するオブジェクト
-        let correctAnswers = {}; // 正解を保持するオブジェクト
+    function displayQuizzes() {
+        if (!quizData?.audio) return;
 
+        const quizzes = getRandomQuizzes(quizData.audio, QUIZ_COUNT);
+        const container = document.getElementById('quiz-content');
+        if (!container) return;
 
-        // クイズの表示処理
-        function displayQuizzes() {
-            if (!quizData?.audio) return;
+        container.innerHTML = ''; // 既存のクイズをクリア
 
-            const quizzes = quizData.audio;
-            const container = document.getElementById('quiz-content');
-            if (!container) return;
+        quizzes.forEach((quiz, index) => {
+            const section = document.createElement('section');
+            section.className = 'mb-4';
 
-            container.innerHTML = ''; // 既存のクイズをクリア
+            const questionElement = document.createElement('p');
+            questionElement.className = 'mb-4';
+            questionElement.textContent = `問題 ${index + 1}`;
+            section.appendChild(questionElement);
 
-            quizzes.forEach((quiz, index) => {
-                const section = document.createElement('section');
-                section.className = 'mb-4';
+            const playButton = document.createElement('button');
+            playButton.className = 'btn btn-secondary mb-4';
+            playButton.innerHTML = `<i class="bi bi-play-fill me-2"></i>音を再生`;
+            playButton.dataset.audioFile = `${quiz.audioSrc}`;
+            playButton.addEventListener('click', (event) => playAudio(event));
+            section.appendChild(playButton);
 
-                const questionElement = document.createElement('p');
-                questionElement.className = 'mb-4';
-                questionElement.textContent = `問題 ${index + 1}`;
-                section.appendChild(questionElement);
+            const answerInput = document.createElement('input');
+            answerInput.type = 'text';
+            answerInput.className = 'form-control mb-4 w-50';
+            answerInput.id = `quiz-answer-${index}`;
+            answerInput.placeholder = '音階を入力してください';
+            section.appendChild(answerInput);
 
-                const playButton = document.createElement('button');
-                playButton.className = 'btn btn-secondary mb-4';
-                playButton.innerHTML = `<i class="bi bi-play-fill me-2"></i>音を再生`;
-                playButton.dataset.audioFile = `${quiz.audioSrc}`;
-                playButton.addEventListener('click', (event) => playAudio(event));
-                section.appendChild(playButton);
+            container.appendChild(section);
 
-                const answerInput = document.createElement('input');
-                answerInput.type = 'text';
-                answerInput.className = 'form-control mb-4 w-50';
-                answerInput.id = `quiz-answer-audio-${index}`;
-                answerInput.placeholder = '音階を入力してください';
-                section.appendChild(answerInput);
+            correctAnswers[index] = quiz.correctAnswer;
+        });
+    }
 
-                container.appendChild(section);
-
-                // 正解を保存
-                correctAnswers[index] = quiz.correctAnswer;
+    // 音声を再生する関数
+    function playAudio(event) {
+        const audioFile = event.target.dataset.audioFile;
+        console.log('再生する音声ファイル:', audioFile);
+        if (audioFile) {
+            const audio = new Audio(audioFile);
+            audio.play().catch(error => {
+                console.error('音声の再生に失敗しました:', error);
             });
+        } else {
+            console.error('Audio file not found.');
         }
+    }
 
-        // 音声を再生する関数
-        function playAudio(event) {
-            const audioFile = event.target.dataset.audioFile;
-            console.log('再生する音声ファイル:', audioFile);
-            if (audioFile) {
-                const audio = new Audio(audioFile);
-                audio.play().catch(error => {
-                    console.error('音声の再生に失敗しました:', error);
-                });
-            } else {
-                console.error('Audio file not found.');
+    function submitAnswers() {
+        let correctCount = 0;
+
+        for (let index = 0; index < QUIZ_COUNT; index++) {
+            const answerInput = document.getElementById(`quiz-answer-${index}`);
+            // console.log('回答:', answerInput?.value);
+            // console.log('正解:', correctAnswers[index]);
+            if (answerInput && answerInput.value.trim() === correctAnswers[index]) {
+                correctCount++;
             }
         }
 
-        // 回答を提出
-        function submitAnswers() {
-            console.log('回答:', inputAnswers);
-            showResultsAlert();
-        }
-
-        function showResultsAlert() {
-            const quizzes = quizData.audio;
-            let correctCount = 0;
-
-            quizzes.forEach((quiz, index) => {
-                const answerInput = document.getElementById(`quiz-answer-audio-${index}`);
-                if (answerInput && answerInput.value.trim() === quiz.correctAnswer) {
-                    correctCount++;
-                }
-            });
-
-            // 結果を表示
-            alert(`正解数: ${correctCount} / ${quizzes.length}`);
-        }
-
-
-    </script>
+        // 結果を表示
+        alert(`正解数: ${correctCount} / ${QUIZ_COUNT}`);
+    }
+</script>
 </body>
 </html>

@@ -23,7 +23,11 @@
                 console.error('初期化に失敗:', error);
             }
         });
-    
+
+        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
+        let quizData = null;
+        let correctAnswers = {};
+
         async function initQuiz() {
             try {
                 const response = await fetch('/quiz-data.json');
@@ -36,58 +40,23 @@
                 console.error('クイズデータの取得に失敗:', error);
             }
         }
-    
+
         function getRandomQuizzes(quizzes, count) {
             return quizzes.sort(() => 0.5 - Math.random()).slice(0, count);
         }
-    
+
         function setupEventListeners() {
             const submitButton = document.getElementById('quiz-submit');
-            if (submitButton) {
-                submitButton.addEventListener('click', submitAnswers);
-            }
-        }
-    
-    </script>
-    <script>
-        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
-        let quizData = null;
-        let answers = {};
-
-        // 初期化処理
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initQuiz();
-                setupEventListeners();
-            } catch (error) {
-                console.error('初期化に失敗:', error);
-            }
-        });
-
-        // クイズデータの取得
-        async function initQuiz() {
-            const response = await fetch('quiz-data.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            quizData = await response.json();
-            displayQuizzes();
-        }
-
-        // イベントリスナーの設定
-        function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit');
-            if (!submitButton.dataset.listenerAdded) {
+            if (submitButton && !submitButton.dataset.listenerAdded) {
                 submitButton.addEventListener('click', submitAnswers);
                 submitButton.dataset.listenerAdded = 'true';
             }
         }
 
-        // クイズの表示処理
         function displayQuizzes() {
             if (!quizData?.sheet) return;
 
-            const quizzes = quizData.sheet;
+            const quizzes = getRandomQuizzes(quizData.sheet, QUIZ_COUNT);
             const container = document.getElementById('quiz-content');
             if (!container) return;
 
@@ -112,23 +81,23 @@
                 section.appendChild(answerInput);
 
                 container.appendChild(section);
+
+                correctAnswers[index] = quiz.correctAnswer;
             });
         }
 
-        // 回答を提出
         function submitAnswers() {
-            const quizzes = quizData.sheet;
             let correctCount = 0;
 
-            quizzes.forEach((quiz, index) => {
+            for (let index = 0; index < QUIZ_COUNT; index++) {
                 const answerInput = document.getElementById(`quiz-answer-${index}`);
-                if (answerInput && answerInput.value.trim() === quiz.correctAnswer) {
+                if (answerInput && answerInput.value.trim() === correctAnswers[index]) {
                     correctCount++;
                 }
-            });
+            }
 
             // 結果を表示
-            alert(`正解数: ${correctCount} / ${quizzes.length}`);
+            alert(`正解数: ${correctCount} / ${QUIZ_COUNT}`);
         }
     </script>
 </body>

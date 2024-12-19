@@ -25,7 +25,12 @@
                 console.error('初期化に失敗:', error);
             }
         });
-    
+
+        let quizData = null;
+        const QUIZ_COUNT = 3;
+        const inputAnswers = {};
+        const correctAnswers = {};
+
         async function initQuiz() {
             try {
                 const response = await fetch('/quiz-data.json');
@@ -38,27 +43,19 @@
                 console.error('クイズデータの取得に失敗:', error);
             }
         }
-    
+
         function getRandomQuizzes(quizzes, count) {
             return quizzes.sort(() => 0.5 - Math.random()).slice(0, count);
         }
-    
+
         function setupEventListeners() {
             const submitButton = document.getElementById('quiz-submit');
-            if (submitButton) {
+            if (submitButton && !submitButton.dataset.listenerAdded) {
                 submitButton.addEventListener('click', submitAnswers);
+                submitButton.dataset.listenerAdded = 'true';
             }
         }
-    
-    </script>
-    <script>
-        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
-        let quizData = null; // initQuiz()でjsonからクイズデータを読み込む
-        let inputAnswers = {}; // 入力された回答を保持するオブジェクト
-        let correctAnswers = {}; // 正解を保持するオブジェクト
 
-
-        // クイズの表示処理
         function displayQuizzes() {
             if (!quizData?.multiple) return;
 
@@ -115,22 +112,21 @@
 
         function showResultsAlert() {
             const totalQuestions = QUIZ_COUNT;
-
             let correctCount = 0;
-            for(let i = 0; i < QUIZ_COUNT; i++) {
-            if (inputAnswers[i] === correctAnswers[i]) {
-                correctCount++;
-            }
+
+            for (let i = 0; i < QUIZ_COUNT; i++) {
+                if (inputAnswers[i] === correctAnswers[i]) {
+                    correctCount++;
+                }
             }
 
             const resultMessage = `
-            あなたの回答: ${JSON.stringify(inputAnswers)}
-            正解数: ${correctCount} / ${totalQuestions}
+                あなたの回答: ${JSON.stringify(inputAnswers)}
+                正解数: ${correctCount} / ${totalQuestions}
             `;
 
             alert(resultMessage);
         }
-
     </script>
 </body>
 </html>
