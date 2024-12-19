@@ -9,57 +9,29 @@
         <main style="max-width: 90%; margin: 0 auto;">
             <section class="quiz-container" style="max-width: 100%;">
                 <h2 class="h4 mb-4">音階当てクイズ</h2>
-                <div id="quiz-content-audio"></div>
-                <button class="btn btn-primary" id="quiz-submit-audio">回答する</button>
+                <div id="quiz-content"></div>
+                <button class="btn btn-primary" id="quiz-submit">回答する</button>
             </section>
         </main>
     </div>
     <%- include('partials/common') %>
 
     <script>
-        let quizData = null;
-        let currentAudios = [];
-        let answers = {};
+        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
+        let quizData = null; // initQuiz()でjsonからクイズデータを読み込む
+        let inputAnswers = {}; // 入力された回答を保持するオブジェクト
+        let correctAnswers = {}; // 正解を保持するオブジェクト
 
-        // 初期化処理
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initQuiz();
-                setupEventListeners();
-            } catch (error) {
-                console.error('初期化に失敗:', error);
-            }
-        });
-
-        // クイズデータの取得
-        async function initQuiz() {
-            const response = await fetch('quiz-data.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            quizData = await response.json();
-            displayQuizzes();
-        }
-
-        // イベントリスナーの設定
-        function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit-audio');
-            if (!submitButton.dataset.listenerAdded) {
-                submitButton.addEventListener('click', submitAnswers);
-                submitButton.dataset.listenerAdded = 'true';
-            }
-        }
 
         // クイズの表示処理
         function displayQuizzes() {
             if (!quizData?.audio) return;
 
             const quizzes = quizData.audio;
-            const container = document.getElementById('quiz-content-audio');
+            const container = document.getElementById('quiz-content');
             if (!container) return;
 
             container.innerHTML = ''; // 既存のクイズをクリア
-            currentAudios = [];
 
             quizzes.forEach((quiz, index) => {
                 const section = document.createElement('section');
@@ -73,7 +45,7 @@
                 const playButton = document.createElement('button');
                 playButton.className = 'btn btn-secondary mb-4';
                 playButton.innerHTML = `<i class="bi bi-play-fill me-2"></i>音を再生`;
-                playButton.dataset.audioFile = `/${quiz.audioSrc}`;
+                playButton.dataset.audioFile = `${quiz.audioSrc}`;
                 playButton.addEventListener('click', (event) => playAudio(event));
                 section.appendChild(playButton);
 
@@ -86,14 +58,8 @@
 
                 container.appendChild(section);
 
-                // Audioオブジェクトを作成し、currentAudios配列に追加
-                const audio = new Audio(quiz.audioSrc);
-                audio.addEventListener('canplaythrough', () => {
-                    currentAudios[index] = audio;
-                });
-                audio.addEventListener('error', (e) => {
-                    console.error(`音声ファイルの読み込みに失敗しました: ${quiz.audioSrc}`, e);
-                });
+                // 正解を保存
+                correctAnswers[index] = quiz.correctAnswer;
             });
         }
 
@@ -113,18 +79,26 @@
 
         // 回答を提出
         function submitAnswers() {
+            console.log('回答:', inputAnswers);
+            showResultsAlert();
+        }
+
+        function showResultsAlert() {
             const quizzes = quizData.audio;
             let correctCount = 0;
 
             quizzes.forEach((quiz, index) => {
                 const answerInput = document.getElementById(`quiz-answer-audio-${index}`);
-                if (answerInput && answerInput.value.trim() === quiz.answer) {
+                if (answerInput && answerInput.value.trim() === quiz.correctAnswer) {
                     correctCount++;
                 }
             });
 
+            // 結果を表示
             alert(`正解数: ${correctCount} / ${quizzes.length}`);
         }
+
+
     </script>
 </body>
 </html>

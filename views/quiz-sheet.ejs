@@ -88,7 +88,7 @@
 
             quizzes.forEach((quiz, index) => {
                 const answerInput = document.getElementById(`quiz-answer-${index}`);
-                if (answerInput && answerInput.value.trim() === quiz.answer) {
+                if (answerInput && answerInput.value.trim() === quiz.correctAnswer) {
                     correctCount++;
                 }
             });

@@ -9,8 +9,8 @@
         <main style="max-width: 90%; margin: 0 auto;">
             <section class="quiz-container" style="max-width: 100%;">
                 <h2 class="h4 mb-4">自由回答クイズ</h2>
-                <div id="quiz-content-free"></div>
-                <button class="btn btn-primary" id="quiz-submit-free">回答する</button>
+                <div id="quiz-content"></div>
+                <button class="btn btn-primary" id="quiz-submit">回答する</button>
             </section>
         </main>
     </div>
@@ -42,7 +42,7 @@
 
         // イベントリスナーの設定
         function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit-free');
+            const submitButton = document.getElementById('quiz-submit');
             if (!submitButton.dataset.listenerAdded) {
                 submitButton.addEventListener('click', submitAnswers);
                 submitButton.dataset.listenerAdded = 'true';
@@ -54,7 +54,7 @@
             if (!quizData?.free) return;
 
             const quizzes = quizData.free;
-            const container = document.getElementById('quiz-content-free');
+            const container = document.getElementById('quiz-content');
             if (!container) return;
 
             container.innerHTML = ''; // 既存のクイズをクリア
@@ -71,7 +71,7 @@
                 const answerInput = document.createElement('input');
                 answerInput.type = 'text';
                 answerInput.className = 'form-control mb-4 w-50';
-                answerInput.id = `quiz-answer-free-${index}`;
+                answerInput.id = `quiz-answer-${index}`;
                 answerInput.placeholder = '回答を入力してください';
                 section.appendChild(answerInput);
 
@@ -85,8 +85,9 @@
             let correctCount = 0;
 
             quizzes.forEach((quiz, index) => {
-                const answerInput = document.getElementById(`quiz-answer-free-${index}`);
-                if (answerInput && answerInput.value.trim() === quiz.answer) {
+                const answerInput = document.getElementById(`quiz-answer-${index}`);
+                console.log('回答:', answerInput.value);
+                if (answerInput && answerInput.value.trim() === quiz.correctAnswer) {
                     correctCount++;
                 }
             });
