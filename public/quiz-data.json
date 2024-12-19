@@ -1,0 +1,62 @@
+{
+  "multiple": [
+    {
+      "question": "音符の種類で最も長い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
+      "answer": "全音符"
+    },
+    {
+      "question": "音符の種類で最も短い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "32分音符"],
+      "answer": "32分音符"
+    },
+    {
+      "question": "音符の種類で2番目に長い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
+      "answer": "2分音符"
+    },
+    {
+      "question": "音符の種類で2番目に短い音符は？",
+      "choices": ["全音符", "2分音符", "16分音符", "32分音符"],
+      "answer": "16分音符"
+    }
+  ],
+  "free": [
+    {
+      "question": "4分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "answer": "4"
+    },
+    {
+      "question": "8分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "answer": "8"
+    }
+  ],
+  "audio": [
+    {
+      "audioSrc": "audio/C.mp3",
+      "answer": "C"
+    },
+    {
+      "audioSrc": "audio/D.mp3",
+      "answer": "D"
+    },
+    {
+      "audioSrc": "audio/E.mp3",
+      "answer": "E"
+    }
+  ],
+  "sheet": [
+    {
+      "imageSrc": "images/C.jpg",
+      "answer": "C"
+    },
+    {
+      "imageSrc": "images/D.jpg",
+      "answer": "D"
+    },
+    {
+      "imageSrc": "images/E.jpg",
+      "answer": "E"
+    }
+  ]
+}
