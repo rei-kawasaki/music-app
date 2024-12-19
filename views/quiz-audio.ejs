@@ -14,8 +14,43 @@
             </section>
         </main>
     </div>
-    <%- include('partials/common') %>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            await initQuiz();
+            setupEventListeners();
+        } catch (error) {
+            console.error('初期化に失敗:', error);
+        }
+    });
+
+    async function initQuiz() {
+        try {
+            const response = await fetch('/quiz-data.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            quizData = await response.json();
+            displayQuizzes();
+        } catch (error) {
+            console.error('クイズデータの取得に失敗:', error);
+        }
+    }
+
+    function getRandomQuizzes(quizzes, count) {
+        return quizzes.sort(() => 0.5 - Math.random()).slice(0, count);
+    }
+
+    function setupEventListeners() {
+        const submitButton = document.getElementById('quiz-submit');
+        if (submitButton) {
+            submitButton.addEventListener('click', submitAnswers);
+        }
+    }
+
+</script>
     <script>
         const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
         let quizData = null; // initQuiz()でjsonからクイズデータを読み込む
