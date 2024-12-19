@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<%- include('partials/head') %>
+<body>
+    <div class="container mt-5">
+        <%- include('partials/header') %> 
+        <%- include('partials/nav') %>
+
+        <main style="max-width: 90%; margin: 0 auto;">
+            <section class="quiz-container bg-light p-5" style="max-width: 100%;">
+                <h2 class="h4 mb-4">自由回答クイズ</h2>
+                <div id="quiz-content"></div>
+                <button class="btn btn-primary" id="quiz-submit">回答する</button>
+            </section>
+        </main>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            await initQuiz();
+            setupEventListeners();
+        } catch (error) {
+            console.error('初期化に失敗:', error);
+        }
+    });
+
+    const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
+    let quizData = null;
+    let correctAnswers = {};
+
+    async function initQuiz() {
+        try {
+            const response = await fetch('/quiz-data.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            quizData = await response.json();
+            displayQuizzes();
+        } catch (error) {
+            console.error('クイズデータの取得に失敗:', error);
+        }
+    }
+
+    function getRandomQuizzes(quizzes, count) {
+        return quizzes.sort(() => 0.5 - Math.random()).slice(0, count);
+    }
+
+    function setupEventListeners() {
+        const submitButton = document.getElementById('quiz-submit');
+        if (submitButton && !submitButton.dataset.listenerAdded) {
+            submitButton.addEventListener('click', submitAnswers);
+            submitButton.dataset.listenerAdded = 'true';
+        }
+    }
+
+    function displayQuizzes() {
+        if (!quizData?.free) return;
+
+        const quizzes = getRandomQuizzes(quizData.free, QUIZ_COUNT);
+        const container = document.getElementById('quiz-content');
+        if (!container) return;
+
+        container.innerHTML = ''; // 既存のクイズをクリア
+
+        quizzes.forEach((quiz, index) => {
+            const section = document.createElement('section');
+            section.className = 'mb-4';
+
+            const questionElement = document.createElement('p');
+            questionElement.className = 'mb-4';
+            questionElement.textContent = quiz.question;
+            section.appendChild(questionElement);
+
+            const answerInput = document.createElement('input');
+            answerInput.type = 'text';
+            answerInput.className = 'form-control mb-4 w-50';
+            answerInput.id = `quiz-answer-${index}`;
+            answerInput.placeholder = '回答を入力してください';
+            section.appendChild(answerInput);
+
+            container.appendChild(section);
+
+            correctAnswers[index] = quiz.correctAnswer;
+        });
+    }
+
+    function submitAnswers() {
+        let correctCount = 0;
+
+        for (let index = 0; index < QUIZ_COUNT; index++) {
+            const answerInput = document.getElementById(`quiz-answer-${index}`);
+            if (answerInput && answerInput.value.trim() === correctAnswers[index]) {
+                correctCount++;
+            }
+        }
+
+        // 結果を表示
+        alert(`正解数: ${correctCount} / ${QUIZ_COUNT}`);
+    }
+</script>
+</body>
+</html>
