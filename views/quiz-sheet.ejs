@@ -4,18 +4,19 @@
 <body>
     <div class="container mt-5">
         <%- include('partials/header') %>
-        <%- include('partials/nav' , {activePage: 'sheet'}) %>
+        <%- include('partials/nav')  %>
         <main style="max-width: 90%; margin: 0 auto;">
             <section class="quiz-container">
                 <h2 class="h4 mb-4">楽譜クイズ</h2>
-                <div id="quiz-content-sheet"></div>
-                <button class="btn btn-primary" id="quiz-submit-sheet">回答する</button>
+                <div id="quiz-content"></div>
+                <button class="btn btn-primary" id="quiz-submit">回答する</button>
             </section>
         </main>
     </div>
 
-    <%- include('partials/script') %>
+    <%- include('partials/common') %>
     <script>
+        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
         let quizData = null;
         let answers = {};
 
@@ -41,7 +42,7 @@
 
         // イベントリスナーの設定
         function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit-sheet');
+            const submitButton = document.getElementById('quiz-submit');
             if (!submitButton.dataset.listenerAdded) {
                 submitButton.addEventListener('click', submitAnswers);
                 submitButton.dataset.listenerAdded = 'true';
@@ -53,7 +54,7 @@
             if (!quizData?.sheet) return;
 
             const quizzes = quizData.sheet;
-            const container = document.getElementById('quiz-content-sheet');
+            const container = document.getElementById('quiz-content');
             if (!container) return;
 
             container.innerHTML = ''; // 既存のクイズをクリア
@@ -63,7 +64,7 @@
                 section.className = 'mb-4';
 
                 const imageElement = document.createElement('img');
-                imageElement.id = `quiz-image-sheet-${index}`;
+                imageElement.id = `quiz-image-${index}`;
                 imageElement.className = 'img-fluid mb-4';
                 imageElement.src = quiz.imageSrc;
                 imageElement.alt = '楽譜';
@@ -72,7 +73,7 @@
                 const answerInput = document.createElement('input');
                 answerInput.type = 'text';
                 answerInput.className = 'form-control mb-4 w-50';
-                answerInput.id = `quiz-answer-sheet-${index}`;
+                answerInput.id = `quiz-answer-${index}`;
                 answerInput.placeholder = '楽譜を読み取って入力してください';
                 section.appendChild(answerInput);
 
@@ -86,7 +87,7 @@
             let correctCount = 0;
 
             quizzes.forEach((quiz, index) => {
-                const answerInput = document.getElementById(`quiz-answer-sheet-${index}`);
+                const answerInput = document.getElementById(`quiz-answer-${index}`);
                 if (answerInput && answerInput.value.trim() === quiz.answer) {
                     correctCount++;
                 }

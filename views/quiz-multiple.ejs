@@ -4,19 +4,20 @@
 <body>
     <div class="container mt-5">
         <%- include('partials/header') %>
-        <%- include('partials/nav' , {activePage: 'multiple'}) %>
+        <%- include('partials/nav') %>
 
         <main style="max-width: 90%; margin: 0 auto;">
             <section class="quiz-container" style="max-width: 100%;">
                 <h2 class="h4 mb-4">4択クイズ</h2>
-                <div id="quiz-content-multiple"></div>
-                <button class="btn btn-primary" id="quiz-submit-multiple">回答する</button>
+                <div id="quiz-content"></div>
+                <button class="btn btn-primary" id="quiz-submit">回答する</button>
             </section>
         </main>
     </div>
 
-    <%- include('partials/script') %>
+    <%- include('partials/common') %>
     <script>
+        const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
         let quizData = null;
         let selectedChoices = {};
 
@@ -32,7 +33,7 @@
 
         // クイズデータの取得
         async function initQuiz() {
-            const response = await fetch('quiz-data.json');
+            const response = await fetch('/quiz-data.json');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -40,34 +41,25 @@
             displayQuizzes();
         }
 
-        // イベントリスナーの設定
-        function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit-multiple');
-            if (!submitButton.dataset.listenerAdded) {
-                submitButton.addEventListener('click', submitAnswers);
-                submitButton.dataset.listenerAdded = 'true';
-            }
-        }
-
         // クイズの表示処理
         function displayQuizzes() {
             if (!quizData?.multiple) return;
 
-            const quizzes = quizData.multiple;
-            const container = document.getElementById('quiz-content-multiple');
+            const quizzes = getRandomQuizzes(quizData.multiple, QUIZ_COUNT);
+            const container = document.getElementById('quiz-content');
             if (!container) return;
 
             container.innerHTML = ''; // 既存のクイズをクリア
 
             quizzes.forEach((quiz, index) => {
                 const questionElement = document.createElement('p');
-                questionElement.id = `quiz-question-multiple-${index}`;
+                questionElement.id = `quiz-question-${index}`;
                 questionElement.className = 'mb-4';
                 questionElement.textContent = quiz.question;
                 container.appendChild(questionElement);
 
                 const choicesContainer = document.createElement('div');
-                choicesContainer.id = `quiz-choices-multiple-${index}`;
+                choicesContainer.id = `quiz-choices-${index}`;
                 choicesContainer.className = 'mb-4';
                 container.appendChild(choicesContainer);
 
@@ -82,9 +74,15 @@
             });
         }
 
+        // ランダムにクイズを取得する関数
+        function getRandomQuizzes(quizzes, count) {
+            const shuffled = quizzes.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
         // 選択肢が選ばれた際の処理
         function handleChoiceSelection(quizIndex, button, choice) {
-            const buttons = document.querySelectorAll(`#quiz-choices-multiple-${quizIndex} button`);
+            const buttons = document.querySelectorAll(`#quiz-choices-${quizIndex} button`);
             buttons.forEach(btn => {
                 btn.classList.remove('active');
                 btn.classList.add('btn-outline-primary');
@@ -96,19 +94,61 @@
             selectedChoices[quizIndex] = choice;
         }
 
-        // 回答を提出
-        function submitAnswers() {
-            const quizzes = quizData.multiple;
-            let correctCount = 0;
+        // イベントリスナーの設定
+        function setupEventListeners() {
+            const submitButton = document.getElementById('quiz-submit');
+            submitButton.addEventListener('click', submitAnswers);
+        }
 
-            quizzes.forEach((quiz, index) => {
-                if (selectedChoices[index] === quiz.answer) {
+        // 回答の送信処理
+        function submitAnswers() {
+            console.log('回答:', selectedChoices);
+            showResultsModal();
+        }
+
+        // 成績を表示するモーダルを表示する関数
+        function showResultsModal() {
+            const correctAnswers = calculateCorrectAnswers();
+            const totalQuestions = QUIZ_COUNT;
+
+            const modalHtml = `
+            <div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="resultsModalLabel">成績</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <p>あなたの回答: ${JSON.stringify(selectedChoices)}</p>
+                    <p>正解数: ${correctAnswers} / ${totalQuestions}</p>
+                    <!-- ここに成績の詳細を追加 -->
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            `;
+
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = modalHtml;
+            document.body.appendChild(modalContainer);
+
+            const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+            resultsModal.show();
+        }
+
+        // 正解数を計算する関数
+        function calculateCorrectAnswers() {
+            let correctCount = 0;
+            quizData.multiple.forEach((quiz, index) => {
+                if (selectedChoices[index] === quiz.correctAnswer) {
                     correctCount++;
                 }
             });
-
-            // 結果を表示
-            alert(`正解数: ${correctCount} / ${quizzes.length}`);
+            return correctCount;
         }
     </script>
 </body>
