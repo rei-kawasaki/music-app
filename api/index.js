@@ -4,10 +4,10 @@ const app = express();
 
 // ビューエンジンにEJSを設定
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 
 // 静的ファイルの提供
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // ルート設定
 app.get('/', (req, res) => {
@@ -30,8 +30,9 @@ app.get('/quiz-sheet', (req, res) => {
   res.render('quiz-sheet', { title: '楽譜クイズ', activePage: 'sheet' });
 });
 
-app.listen(3000, () => {
-  console.log('サーバーがポート3000で起動しました');
+// vercelで3000番を使用するため3001番を使用
+app.listen(3001, () => {
+  console.log('サーバーがポート3001で起動しました');
 });
 
 module.exports = app;
