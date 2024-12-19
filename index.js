@@ -33,3 +33,5 @@ app.get('/quiz-sheet', (req, res) => {
 app.listen(3000, () => {
   console.log('サーバーがポート3000で起動しました');
 });
+
+module.exports = app;
