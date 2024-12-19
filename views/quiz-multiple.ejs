@@ -28,7 +28,6 @@
 
         let quizData = null;
         const QUIZ_COUNT = 3;
-        const inputAnswers = {};
         const correctAnswers = {};
 
         async function initQuiz() {
@@ -82,7 +81,7 @@
                     button.className = 'btn btn-outline-primary btn-sm me-2';
                     button.textContent = choice;
                     // 選択肢がクリックされたときの処理を追加
-                    button.addEventListener('click', () => handleChoiceSelection(index, button, choice));
+                    button.addEventListener('click', () => handleChoiceSelection(index, button));
                     choicesContainer.appendChild(button);
                 });
                 // 正解を保存
@@ -90,9 +89,8 @@
             });
         }
 
-
         // 選択肢が選ばれた際の処理
-        function handleChoiceSelection(quizIndex, button, choice) {
+        function handleChoiceSelection(quizIndex, button) {
             const buttons = document.querySelectorAll(`#quiz-choices-${quizIndex} button`);
             buttons.forEach(btn => {
                 btn.classList.remove('active');
@@ -102,15 +100,22 @@
             button.classList.add('active');
             button.classList.remove('btn-outline-primary');
             button.classList.add('btn-primary');
-            inputAnswers[quizIndex] = choice;
         }
 
         function submitAnswers() {
+            const inputAnswers = {};
+            for (let index = 0; index < QUIZ_COUNT; index++) {
+                const selectedButton = document.querySelector(`#quiz-choices-${index} .btn-primary.active`);
+                if (selectedButton) {
+                    inputAnswers[index] = selectedButton.textContent;
+                }
+            }
+
             console.log('回答:', inputAnswers);
-            showResultsAlert();
+            showResultsAlert(inputAnswers);
         }
 
-        function showResultsAlert() {
+        function showResultsAlert(inputAnswers) {
             const totalQuestions = QUIZ_COUNT;
             let correctCount = 0;
 
