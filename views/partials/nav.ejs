@@ -1,29 +1,33 @@
-<nav>
-  <ul class="nav nav-pills mb-5" id="quiz-tabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/">
-        <i class="bi bi-house"></i> ホーム
-      </a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <%= activePage === 'multiple' ? 'active' : '' %>" href="/quiz-multiple">
-        <i class="bi bi-list-ul"></i> 4択クイズ
-      </a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <%= activePage === 'free' ? 'active' : '' %>" href="/quiz-free">
-        <i class="bi bi-pencil"></i> 自由記述
-      </a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <%= activePage === 'audio' ? 'active' : '' %>" href="/quiz-audio">
-        <i class="bi bi-music-note"></i> 音階当て
-      </a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <%= activePage === 'sheet' ? 'active' : '' %>" href="/quiz-sheet">
-        <i class="bi bi-file-earmark-music"></i> 楽譜クイズ
-      </a>
-    </li>
-  </ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="quiz-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/">
+            <i class="bi bi-house"></i> ホーム
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link <%= activePage === 'multiple' ? 'active' : '' %>" href="/quiz-multiple">
+            <i class="bi bi-list-ul"></i> 4択クイズ
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link <%= activePage === 'free' ? 'active' : '' %>" href="/quiz-free">
+            <i class="bi bi-pencil"></i> 自由記述
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link <%= activePage === 'audio' ? 'active' : '' %>" href="/quiz-audio">
+            <i class="bi bi-music-note"></i> 音階当て
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link <%= activePage === 'sheet' ? 'active' : '' %>" href="/quiz-sheet">
+            <i class="bi bi-file-earmark-music"></i> 楽譜クイズ
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>
