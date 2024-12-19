@@ -19,6 +19,16 @@
       "question": "音符の種類で2番目に短い音符は？",
       "choices": ["全音符", "2分音符", "16分音符", "32分音符"],
       "correctAnswer": "16分音符"
+    },
+    {
+      "question": "音符の種類で3番目に長い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
+      "correctAnswer": "4分音符"
+    },
+    {
+      "question": "音符の種類で4番目に長い音符は？",
+      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
+      "correctAnswer": "8分音符"
     }
   ],
   "free": [
@@ -29,6 +39,18 @@
     {
       "question": "8分音符は全音符の何分の1の長さですか？数字のみで答えてください",
       "correctAnswer": "8"
+    },
+    {
+      "question": "16分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "correctAnswer": "16"
+    },
+    {
+      "question": "32分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "correctAnswer": "32"
+    },
+    {
+      "question": "64分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "correctAnswer": "64"
     }
   ],
   "audio": [
@@ -43,6 +65,18 @@
     {
       "audioSrc": "audio/E.mp3",
       "correctAnswer": "E"
+    },
+    {
+      "audioSrc": "audio/F.mp3",
+      "correctAnswer": "F"
+    },
+    {
+      "audioSrc": "audio/G.mp3",
+      "correctAnswer": "G"
+    },
+    {
+      "audioSrc": "audio/A.mp3",
+      "correctAnswer": "A"
     }
   ],
   "sheet": [
@@ -57,6 +91,18 @@
     {
       "imageSrc": "images/E.jpg",
       "correctAnswer": "E"
+    },
+    {
+      "imageSrc": "images/F.jpg",
+      "correctAnswer": "F"
+    },
+    {
+      "imageSrc": "images/G.jpg",
+      "correctAnswer": "G"
+    },
+    {
+      "imageSrc": "images/A.jpg",
+      "correctAnswer": "A"
     }
   ]
 }
