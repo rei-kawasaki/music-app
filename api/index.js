@@ -33,6 +33,7 @@ app.get('/quiz-sheet', (req, res) => {
 // vercelで3000番を使用するため3001番を使用
 app.listen(3001, () => {
   console.log('サーバーがポート3001で起動しました');
+  console.log('http://localhost:3001'); 
 });
 
 module.exports = app;
