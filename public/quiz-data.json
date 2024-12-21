@@ -1,34 +1,28 @@
 {
   "multiple": [
     {
-      "question": "音符の種類で最も長い音符は？",
-      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
-      "correctAnswer": "全音符"
+      "question": "音符の種類で最も長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "correctAnswer": "A"
     },
     {
-      "question": "音符の種類で最も短い音符は？",
-      "choices": ["全音符", "2分音符", "4分音符", "32分音符"],
-      "correctAnswer": "32分音符"
+      "question": "音符の種類で最も短い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 32分音符",
+      "correctAnswer": "D"
     },
     {
-      "question": "音符の種類で2番目に長い音符は？",
-      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
-      "correctAnswer": "2分音符"
+      "question": "音符の種類で2番目に長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "correctAnswer": "B"
     },
     {
-      "question": "音符の種類で2番目に短い音符は？",
-      "choices": ["全音符", "2分音符", "16分音符", "32分音符"],
-      "correctAnswer": "16分音符"
+      "question": "音符の種類で2番目に短い音符は？\nA. 全音符\nB. 2分音符\nC. 16分音符\nD. 32分音符",
+      "correctAnswer": "C"
     },
     {
-      "question": "音符の種類で3番目に長い音符は？",
-      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
-      "correctAnswer": "4分音符"
+      "question": "音符の種類で3番目に長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "correctAnswer": "C"
     },
     {
-      "question": "音符の種類で4番目に長い音符は？",
-      "choices": ["全音符", "2分音符", "4分音符", "8分音符"],
-      "correctAnswer": "8分音符"
+      "question": "音符の種類で4番目に長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "correctAnswer": "D"
     }
   ],
   "free": [
