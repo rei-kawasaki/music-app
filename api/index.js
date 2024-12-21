@@ -30,6 +30,10 @@ app.get('/quiz-sheet', (req, res) => {
   res.render('quiz-sheet', { title: '楽譜クイズ', activePage: 'sheet' });
 });
 
+app.get('/quiz-piano', (req, res) => {
+  res.render('quiz-piano', { title: '和音判定問題', activePage: 'piano' });
+});
+
 // vercelで3000番を使用するため3001番を使用
 app.listen(3001, () => {
   console.log('サーバーがポート3001で起動しました');
