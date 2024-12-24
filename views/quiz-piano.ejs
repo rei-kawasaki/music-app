@@ -1,557 +1,836 @@
 <!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>和音判定問題</title>
-    <%- include('partials/head') %>
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 100vh;
-        margin: 0;
-        background-color: #f4f4f4;
-        font-family: Arial, sans-serif;
-      }
-      .keyboard {
-        position: relative;
-        display: flex;
-        width: 800px; /* 幅を広げる */
-        height: 200px;
-        margin-top: 20px;
-        background-color: #f1f1f1;
-        border: 2px solid #aaa;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      .white-key,
-      .black-key {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        font-size: 14px; /* フォントサイズを少し小さく */
-        font-weight: bold;
-        cursor: pointer;
-        user-select: none;
-        transition: background-color 0.1s;
-        border-radius: 4px;
-      }
-      .white-key {
-        width: 7.14%; /* 14個の白鍵のため */
-        height: 100%;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        position: relative;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      .black-key {
-        width: 6%;
-        height: 60%;
-        background-color: #333;
-        color: white;
-        position: absolute;
-        border-radius: 4px;
-        z-index: 2;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      /* 1オクターブ目の黒鍵位置 */
-      .black-key.c-sharp-1 {
-        left: 4.75%;
-      }
-      .black-key.d-sharp-1 {
-        left: 11.75%;
-      }
-      .black-key.f-sharp-1 {
-        left: 26.25%;
-      }
-      .black-key.g-sharp-1 {
-        left: 33.35%;
-      }
-      .black-key.a-sharp-1 {
-        left: 40.5%;
-      }
-      /* 2オクターブ目の黒鍵位置 */
-      .black-key.c-sharp-2 {
-        left: 54.75%;
-      }
-      .black-key.d-sharp-2 {
-        left: 61.75%;
-      }
-      .black-key.f-sharp-2 {
-        left: 76.25%;
-      }
-      .black-key.g-sharp-2 {
-        left: 83.35%;
-      }
-      .black-key.a-sharp-2 {
-        left: 90.5%;
-      }
+<html lang="en">
 
-      .pressed-white {
-        background-color: #e0e0e0 !important;
-      }
-      .pressed-black {
-        background-color: #555 !important;
-      }
-      /* 他のスタイルは変更なし */
-      .start-screen {
-        text-align: center;
-        padding: 2rem;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px;
-        width: 80%;
-        max-width: 600px;
-      }
+<%- include('partials/head') %>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>和音判定問題</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
 
-      .start-screen div:first-child {
-        font-size: 2em;
-        font-weight: bold;
-        margin-bottom: 1rem;
-      }
+    .keyboard {
+      position: relative;
+      display: flex;
+      width: 800px;
+      /* 幅を広げる */
+      height: 200px;
+      margin-top: 20px;
+      background-color: #f1f1f1;
+      border: 2px solid #aaa;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-      .description {
-        margin-bottom: 2rem;
-        color: #666;
-        line-height: 1.5;
-      }
+    .white-key,
+    .black-key {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      font-size: 14px;
+      /* フォントサイズを少し小さく */
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.1s;
+      border-radius: 4px;
+    }
 
-      .start-button {
-        background-color: #4caf50;
-        color: white;
-        padding: 1rem 2rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.2em;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
+    .white-key {
+      width: 7.14%;
+      /* 14個の白鍵のため */
+      height: 100%;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-      .start-button:hover {
-        background-color: #45a049;
-      }
-      .end-screen {
-        text-align: center;
-        padding: 2rem;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px;
-        width: 80%;
-        max-width: 600px;
-      }
+    .black-key {
+      width: 6%;
+      height: 60%;
+      background-color: #333;
+      color: white;
+      position: absolute;
+      border-radius: 4px;
+      z-index: 2;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-      #final-result {
-        font-size: 1.5em;
-        margin: 1rem 0;
-        padding: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-      }
+    /* 1オクターブ目の黒鍵位置 */
+    .black-key.c-sharp-1 {
+      left: 4.75%;
+    }
 
-      #final-time {
-        font-size: 1.2em;
-        margin: 1rem 0;
-        color: #666;
-      }
+    .black-key.d-sharp-1 {
+      left: 11.75%;
+    }
 
-      .end-button {
-        background-color: #4caf50;
-        color: white;
-        padding: 1rem 2rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.2em;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        margin-top: 1rem;
-      }
+    .black-key.f-sharp-1 {
+      left: 26.25%;
+    }
 
-      .end-button:hover {
-        background-color: #45a049;
-      }
+    .black-key.g-sharp-1 {
+      left: 33.35%;
+    }
 
-      .midi-status {
-        margin: 1rem 0;
-        padding: 0.5rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        color: #666;
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('partials/header') %>
-    <%- include('partials/nav') %>
+    .black-key.a-sharp-1 {
+      left: 40.5%;
+    }
 
-    <!-- スタート画面 -->
-    <div class="start-screen" id="start-screen">
-      <div>和音判定問題</div>
-      <div class="description">
-        音楽の和音を学習する問題です。<br />
-        鍵盤を押して和音を入力してください！
-      </div>
-      <div class="midi-status" id="midi-status">
-        MIDIキーボードの接続状態: 未接続
-      </div>
-      <button class="start-button" id="start-button">スタート</button>
+    /* 2オクターブ目の黒鍵位置 */
+    .black-key.c-sharp-2 {
+      left: 54.75%;
+    }
+
+    .black-key.d-sharp-2 {
+      left: 61.75%;
+    }
+
+    .black-key.f-sharp-2 {
+      left: 76.25%;
+    }
+
+    .black-key.g-sharp-2 {
+      left: 83.35%;
+    }
+
+    .black-key.a-sharp-2 {
+      left: 90.5%;
+    }
+
+    .pressed-white {
+      background-color: #e0e0e0 !important;
+    }
+
+    .pressed-black {
+      background-color: #555 !important;
+    }
+
+    /* 他のスタイルは変更なし */
+    .start-screen {
+      text-align: center;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    .start-screen div:first-child {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .description {
+      margin-bottom: 2rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .start-button {
+      background-color: #4caf50;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .start-button:hover {
+      background-color: #45a049;
+    }
+
+    .end-screen {
+      text-align: center;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    #final-result {
+      font-size: 1.5em;
+      margin: 1rem 0;
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    #final-time {
+      font-size: 1.2em;
+      margin: 1rem 0;
+      color: #666;
+    }
+
+    .end-button {
+      background-color: #4caf50;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+
+    .end-button:hover {
+      background-color: #45a049;
+    }
+
+    .midi-status {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      color: #666;
+    }
+
+    /* 和音のヒント色 */
+    .hint-white {
+      background-color: #fff7e6 !important;
+      /* 薄い黄色 */
+    }
+
+    .hint-black {
+      background-color: #4d4d00 !important;
+      /* 黒鍵用の明るめの色 */
+    }
+
+    .hint-setting {
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .hint-label {
+      color: #666;
+    }
+
+    /* ヒント機能の設定 */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+    }
+
+    input:checked+.slider {
+      background-color: #4caf50;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(26px);
+    }
+
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+</head>
+
+<body>
+        <%- include('partials/header') %>
+        <%- include('partials/nav') %>
+  <!-- スタート画面 -->
+  <div class="start-screen" id="start-screen">
+    <div>和音判定問題</div>
+    <div class="description">
+      音楽の和音を学習する問題です。<br />
+      鍵盤を押して和音を入力してください！
+    </div>
+    <div class="midi-status" id="midi-status">
+      MIDIキーボードの接続状態: 未接続
+    </div>
+    <div class="hint-setting">
+      <label class="switch">
+        <input type="checkbox" id="hint-toggle" checked />
+        <span class="slider round"></span>
+      </label>
+      <span class="hint-label">ヒント表示</span>
+    </div>
+    <button class="start-button" id="start-button">スタート</button>
+  </div>
+
+  <!-- 出題画面 -->
+  <div id="game-screen" style="display: none">
+    <div class="challenge" id="challenge">問題を読み込み中です</div>
+    <div class="input-log" id="input-log">入力： なし</div>
+    <div class="result" id="result"></div>
+    <div class="timer-container">
+      <div class="timer" id="timer">00:00:00.00</div>
+      <div class="question-count" id="question-count">0/5</div>
+      <canvas id="waveformCanvas" width="800" height="300"
+        style="background: #f8f9fa; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      </canvas>
     </div>
 
-    <!-- 出題画面 -->
-    <div id="game-screen" style="display: none">
-      <div class="challenge" id="challenge">問題を読み込み中です</div>
-      <div class="input-log" id="input-log">入力： なし</div>
-      <div class="result" id="result"></div>
-      <div class="timer-container">
-        <div class="timer" id="timer">00:00:00.00</div>
-        <div class="question-count" id="question-count">0/5</div>
-      </div>
 
-      <!-- GUI鍵盤 -->
-      <div class="keyboard" id="keyboard">
-        <!-- 1オクターブ目の白鍵 -->
-        <div class="white-key" data-note="C3" id="key-C3">C3</div>
-        <div class="white-key" data-note="D3" id="key-D3">D3</div>
-        <div class="white-key" data-note="E3" id="key-E3">E3</div>
-        <div class="white-key" data-note="F3" id="key-F3">F3</div>
-        <div class="white-key" data-note="G3" id="key-G3">G3</div>
-        <div class="white-key" data-note="A3" id="key-A3">A3</div>
-        <div class="white-key" data-note="B3" id="key-B3">B3</div>
-        <!-- 2オクターブ目の白鍵 -->
-        <div class="white-key" data-note="C4" id="key-C4">C4</div>
-        <div class="white-key" data-note="D4" id="key-D4">D4</div>
-        <div class="white-key" data-note="E4" id="key-E4">E4</div>
-        <div class="white-key" data-note="F4" id="key-F4">F4</div>
-        <div class="white-key" data-note="G4" id="key-G4">G4</div>
-        <div class="white-key" data-note="A4" id="key-A4">A4</div>
-        <div class="white-key" data-note="B4" id="key-B4">B4</div>
 
-        <!-- 1オクターブ目の黒鍵 -->
-        <div class="black-key c-sharp-1" data-note="C#3" id="key-C#3">C#3</div>
-        <div class="black-key d-sharp-1" data-note="D#3" id="key-D#3">D#3</div>
-        <div class="black-key f-sharp-1" data-note="F#3" id="key-F#3">F#3</div>
-        <div class="black-key g-sharp-1" data-note="G#3" id="key-G#3">G#3</div>
-        <div class="black-key a-sharp-1" data-note="A#3" id="key-A#3">A#3</div>
-        <!-- 2オクターブ目の黒鍵 -->
-        <div class="black-key c-sharp-2" data-note="C#4" id="key-C#4">C#4</div>
-        <div class="black-key d-sharp-2" data-note="D#4" id="key-D#4">D#4</div>
-        <div class="black-key f-sharp-2" data-note="F#4" id="key-F#4">F#4</div>
-        <div class="black-key g-sharp-2" data-note="G#4" id="key-G#4">G#4</div>
-        <div class="black-key a-sharp-2" data-note="A#4" id="key-A#4">A#4</div>
-      </div>
+    <!-- GUI鍵盤 -->
+    <div class="keyboard" id="keyboard">
+      <!-- 1オクターブ目の白鍵 -->
+      <div class="white-key" data-note="C3" id="key-C3">C3</div>
+      <div class="white-key" data-note="D3" id="key-D3">D3</div>
+      <div class="white-key" data-note="E3" id="key-E3">E3</div>
+      <div class="white-key" data-note="F3" id="key-F3">F3</div>
+      <div class="white-key" data-note="G3" id="key-G3">G3</div>
+      <div class="white-key" data-note="A3" id="key-A3">A3</div>
+      <div class="white-key" data-note="B3" id="key-B3">B3</div>
+      <!-- 2オクターブ目の白鍵 -->
+      <div class="white-key" data-note="C4" id="key-C4">C4</div>
+      <div class="white-key" data-note="D4" id="key-D4">D4</div>
+      <div class="white-key" data-note="E4" id="key-E4">E4</div>
+      <div class="white-key" data-note="F4" id="key-F4">F4</div>
+      <div class="white-key" data-note="G4" id="key-G4">G4</div>
+      <div class="white-key" data-note="A4" id="key-A4">A4</div>
+      <div class="white-key" data-note="B4" id="key-B4">B4</div>
+
+      <!-- 1オクターブ目の黒鍵 -->
+      <div class="black-key c-sharp-1" data-note="C#3" id="key-C#3">C#3</div>
+      <div class="black-key d-sharp-1" data-note="D#3" id="key-D#3">D#3</div>
+      <div class="black-key f-sharp-1" data-note="F#3" id="key-F#3">F#3</div>
+      <div class="black-key g-sharp-1" data-note="G#3" id="key-G#3">G#3</div>
+      <div class="black-key a-sharp-1" data-note="A#3" id="key-A#3">A#3</div>
+      <!-- 2オクターブ目の黒鍵 -->
+      <div class="black-key c-sharp-2" data-note="C#4" id="key-C#4">C#4</div>
+      <div class="black-key d-sharp-2" data-note="D#4" id="key-D#4">D#4</div>
+      <div class="black-key f-sharp-2" data-note="F#4" id="key-F#4">F#4</div>
+      <div class="black-key g-sharp-2" data-note="G#4" id="key-G#4">G#4</div>
+      <div class="black-key a-sharp-2" data-note="A#4" id="key-A#4">A#4</div>
     </div>
-    <!-- 結果画面 -->
-    <div id="end-screen" class="end-screen" style="display: none">
-      <div id="final-result"></div>
-      <div id="final-time">経過時間： 00:00:00.00</div>
-      <button class="end-button" id="end-button">もう一度</button>
-    </div>
+  </div>
+  <!-- 結果画面 -->
+  <div id="end-screen" class="end-screen" style="display: none">
+    <div id="final-result"></div>
+    <div id="final-time">経過時間： 00:00:00.00</div>
+    <button class="end-button" id="end-button">もう一度</button>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+  <script>
+    // オーディオファイルの定義
+    const audioFiles = {
+      'C3': 'audio/C3.wav',
+      'C#3': 'audio/Cs3.wav',
+      'D3': 'audio/D3.wav',
+      'D#3': 'audio/Ds3.wav',
+      'E3': 'audio/E3.wav',
+      'F3': 'audio/F3.wav',
+      'F#3': 'audio/Fs3.wav',
+      'G3': 'audio/G3.wav',
+      'G#3': 'audio/Gs3.wav',
+      'A3': 'audio/A3.wav',
+      'A#3': 'audio/As3.wav',
+      'B3': 'audio/B3.wav',
+      'C4': 'audio/C4.wav',
+      'C#4': 'audio/Cs4.wav',
+      'D4': 'audio/D4.wav',
+      'D#4': 'audio/Ds4.wav',
+      'E4': 'audio/E4.wav',
+      'F4': 'audio/F4.wav',
+      'F#4': 'audio/Fs4.wav',
+      'G4': 'audio/G4.wav',
+      'G#4': 'audio/Gs4.wav',
+      'A4': 'audio/A4.wav',
+      'A#4': 'audio/As4.wav',
+      'B4': 'audio/B4.wav'
+    };
 
-      // コード定義
-      const chordDefinitions = {
-        // C
-        C: ["C", "E", "G"],
-        Cm: ["C", "Eb", "G"],
-        Caug: ["C", "E", "G#"],
-        C6: ["C", "E", "G", "A"],
-        Cm6: ["C", "Eb", "G", "A"],
-        C7: ["C", "E", "G", "Bb"],
-        Cmaj7: ["C", "E", "G", "B"],
-        Cm7: ["C", "Eb", "G", "Bb"],
-        Cm7b5: ["C", "Eb", "Gb", "Bb"],
-        C7sus4: ["C", "F", "G", "Bb"],
-        Cdim7: ["C", "Eb", "Gb", "A"],
-        C9: ["C", "E", "G", "Bb", "D"],
-        Cmaj9: ["C", "E", "G", "B", "D"],
-        Cm9: ["C", "Eb", "G", "Bb", "D"],
+    // 音声を管理するクラス
+    class SoundPlayer {
+      constructor() {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.buffers = new Map();
+        this.loading = false;
 
-        // D
-        D: ["D", "F#", "A"],
-        Dm: ["D", "F", "A"],
-        Daug: ["D", "F#", "A#"],
-        D6: ["D", "F#", "A", "B"],
-        Dm6: ["D", "F", "A", "B"],
-        D7: ["D", "F#", "A", "C"],
-        Dmaj7: ["D", "F#", "A", "C#"],
-        Dm7: ["D", "F", "A", "C"],
-        Dm7b5: ["D", "F", "Ab", "C"],
-        D7sus4: ["D", "G", "A", "C"],
-        Ddim7: ["D", "F", "Ab", "B"],
-        D9: ["D", "F#", "A", "C", "E"],
-        Dmaj9: ["D", "F#", "A", "C#", "E"],
-        Dm9: ["D", "F", "A", "C", "E"],
+        // アナライザーの設定
+        this.analyser = this.audioContext.createAnalyser();
+        this.analyser.fftSize = 2048;
+        this.analyser.minDecibels = -90;
+        this.analyser.maxDecibels = -10;
+        this.analyser.smoothingTimeConstant = 0.85;
+        this.analyser.connect(this.audioContext.destination);
 
-        // E
-        E: ["E", "G#", "B"],
-        Em: ["E", "G", "B"],
-        Eaug: ["E", "G#", "B#"],
-        E6: ["E", "G#", "B", "C#"],
-        Em6: ["E", "G", "B", "C#"],
-        E7: ["E", "G#", "B", "D"],
-        Emaj7: ["E", "G#", "B", "D#"],
-        Em7: ["E", "G", "B", "D"],
-        Em7b5: ["E", "G", "Bb", "D"],
-        E7sus4: ["E", "A", "B", "D"],
-        Edim7: ["E", "G", "Bb", "C#"],
-        E9: ["E", "G#", "B", "D", "F#"],
-        Emaj9: ["E", "G#", "B", "D#", "F#"],
-        Em9: ["E", "G", "B", "D", "F#"],
+        // 波形描画用の設定
+        this.canvas = document.getElementById('waveformCanvas');
+        this.canvasCtx = this.canvas.getContext('2d');
+        this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
+        this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+        this.isDrawing = false;
 
-        // F
-        F: ["F", "A", "C"],
-        Fm: ["F", "Ab", "C"],
-        Faug: ["F", "A", "C#"],
-        F6: ["F", "A", "C", "D"],
-        Fm6: ["F", "Ab", "C", "D"],
-        F7: ["F", "A", "C", "Eb"],
-        Fmaj7: ["F", "A", "C", "E"],
-        Fm7: ["F", "Ab", "C", "Eb"],
-        Fm7b5: ["F", "Ab", "B", "Eb"],
-        F7sus4: ["F", "Bb", "C", "Eb"],
-        Fdim7: ["F", "Ab", "B", "D"],
-        F9: ["F", "A", "C", "Eb", "G"],
-        Fmaj9: ["F", "A", "C", "E", "G"],
-        Fm9: ["F", "Ab", "C", "Eb", "G"],
+        // 再生中の音名を保存
+        this.currentNote = null;
+      }
 
-        // G
-        G: ["G", "B", "D"],
-        Gm: ["G", "Bb", "D"],
-        Gaug: ["G", "B", "D#"],
-        G6: ["G", "B", "D", "E"],
-        Gm6: ["G", "Bb", "D", "E"],
-        G7: ["G", "B", "D", "F"],
-        Gmaj7: ["G", "B", "D", "F#"],
-        Gm7: ["G", "Bb", "D", "F"],
-        Gm7b5: ["G", "Bb", "Db", "F"],
-        G7sus4: ["G", "C", "D", "F"],
-        Gdim7: ["G", "Bb", "Db", "E"],
-        G9: ["G", "B", "D", "F", "A"],
-        Gmaj9: ["G", "B", "D", "F#", "A"],
-        Gm9: ["G", "Bb", "D", "F", "A"],
+      async loadSounds() {
+        if (this.loading) return;
+        this.loading = true;
 
-        // A
-        A: ["A", "C#", "E"],
-        Am: ["A", "C", "E"],
-        Aaug: ["A", "C#", "E#"],
-        A6: ["A", "C#", "E", "F#"],
-        Am6: ["A", "C", "E", "F#"],
-        A7: ["A", "C#", "E", "G"],
-        Amaj7: ["A", "C#", "E", "G#"],
-        Am7: ["A", "C", "E", "G"],
-        Am7b5: ["A", "C", "Eb", "G"],
-        A7sus4: ["A", "D", "E", "G"],
-        Adim7: ["A", "C", "Eb", "F#"],
-        A9: ["A", "C#", "E", "G", "B"],
-        Amaj9: ["A", "C#", "E", "G#", "B"],
-        Am9: ["A", "C", "E", "G", "B"],
+        try {
+          await Promise.all(Object.entries(audioFiles).map(async ([note, path]) => {
+            const response = await fetch(path);
+            const arrayBuffer = await response.arrayBuffer();
+            const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+            this.buffers.set(note, audioBuffer);
+          }));
+        } catch (error) {
+          console.error('Error loading sounds:', error);
+        }
 
-        // B
-        B: ["B", "D#", "F#"],
-        Bm: ["B", "D", "F#"],
-        Baug: ["B", "D#", "F##"],
-        B6: ["B", "D#", "F#", "G#"],
-        Bm6: ["B", "D", "F#", "G#"],
-        B7: ["B", "D#", "F#", "A"],
-        Bmaj7: ["B", "D#", "F#", "A#"],
-        Bm7: ["B", "D", "F#", "A"],
-        Bm7b5: ["B", "D", "F", "A"],
-        B7sus4: ["B", "E", "F#", "A"],
-        Bdim7: ["B", "D", "F", "Ab"],
-        B9: ["B", "D#", "F#", "A", "C#"],
-        Bmaj9: ["B", "D#", "F#", "A#", "C#"],
-        Bm9: ["B", "D", "F#", "A", "C#"],
-      };
+        this.loading = false;
+      }
 
-      const problems = [
-        // C
-        { type: "chord", chord: "C" },
-        { type: "chord", chord: "Cm" },
-        { type: "chord", chord: "Caug" },
-        { type: "chord", chord: "C6" },
-        { type: "chord", chord: "Cm6" },
-        { type: "chord", chord: "C7" },
-        { type: "chord", chord: "Cmaj7" },
-        { type: "chord", chord: "Cm7" },
-        { type: "chord", chord: "Cm7b5" },
-        { type: "chord", chord: "C7sus4" },
-        { type: "chord", chord: "Cdim7" },
-        { type: "chord", chord: "C9" },
-        { type: "chord", chord: "Cmaj9" },
-        { type: "chord", chord: "Cm9" },
+      playNote(note) {
+        const buffer = this.buffers.get(note);
+        if (!buffer) return;
 
-        // D
-        { type: "chord", chord: "D" },
-        { type: "chord", chord: "Dm" },
-        { type: "chord", chord: "Daug" },
-        { type: "chord", chord: "D6" },
-        { type: "chord", chord: "Dm6" },
-        { type: "chord", chord: "D7" },
-        { type: "chord", chord: "Dmaj7" },
-        { type: "chord", chord: "Dm7" },
-        { type: "chord", chord: "Dm7b5" },
-        { type: "chord", chord: "D7sus4" },
-        { type: "chord", chord: "Ddim7" },
-        { type: "chord", chord: "D9" },
-        { type: "chord", chord: "Dmaj9" },
-        { type: "chord", chord: "Dm9" },
+        const source = this.audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.analyser);
+        source.start(0);
 
-        // E
-        { type: "chord", chord: "E" },
-        { type: "chord", chord: "Em" },
-        { type: "chord", chord: "Eaug" },
-        { type: "chord", chord: "E6" },
-        { type: "chord", chord: "Em6" },
-        { type: "chord", chord: "E7" },
-        { type: "chord", chord: "Emaj7" },
-        { type: "chord", chord: "Em7" },
-        { type: "chord", chord: "Em7b5" },
-        { type: "chord", chord: "E7sus4" },
-        { type: "chord", chord: "Edim7" },
-        { type: "chord", chord: "E9" },
-        { type: "chord", chord: "Emaj9" },
-        { type: "chord", chord: "Em9" },
+        this.currentNote = note;
 
-        // F
-        { type: "chord", chord: "F" },
-        { type: "chord", chord: "Fm" },
-        { type: "chord", chord: "Faug" },
-        { type: "chord", chord: "F6" },
-        { type: "chord", chord: "Fm6" },
-        { type: "chord", chord: "F7" },
-        { type: "chord", chord: "Fmaj7" },
-        { type: "chord", chord: "Fm7" },
-        { type: "chord", chord: "Fm7b5" },
-        { type: "chord", chord: "F7sus4" },
-        { type: "chord", chord: "Fdim7" },
-        { type: "chord", chord: "F9" },
-        { type: "chord", chord: "Fmaj9" },
-        { type: "chord", chord: "Fm9" },
+        if (!this.isDrawing) {
+          this.isDrawing = true;
+          this.drawVisualization();
+        }
+      }
 
-        // G
-        { type: "chord", chord: "G" },
-        { type: "chord", chord: "Gm" },
-        { type: "chord", chord: "Gaug" },
-        { type: "chord", chord: "G6" },
-        { type: "chord", chord: "Gm6" },
-        { type: "chord", chord: "G7" },
-        { type: "chord", chord: "Gmaj7" },
-        { type: "chord", chord: "Gm7" },
-        { type: "chord", chord: "Gm7b5" },
-        { type: "chord", chord: "G7sus4" },
-        { type: "chord", chord: "Gdim7" },
-        { type: "chord", chord: "G9" },
-        { type: "chord", chord: "Gmaj9" },
-        { type: "chord", chord: "Gm9" },
+      drawVisualization() {
+        const draw = () => {
+          if (!this.isDrawing) return;
+          requestAnimationFrame(draw);
 
-        // A
-        { type: "chord", chord: "A" },
-        { type: "chord", chord: "Am" },
-        { type: "chord", chord: "Aaug" },
-        { type: "chord", chord: "A6" },
-        { type: "chord", chord: "Am6" },
-        { type: "chord", chord: "A7" },
-        { type: "chord", chord: "Amaj7" },
-        { type: "chord", chord: "Am7" },
-        { type: "chord", chord: "Am7b5" },
-        { type: "chord", chord: "A7sus4" },
-        { type: "chord", chord: "Adim7" },
-        { type: "chord", chord: "A9" },
-        { type: "chord", chord: "Amaj9" },
-        { type: "chord", chord: "Am9" },
+          const width = this.canvas.width;
+          const height = this.canvas.height;
 
-        // B
-        { type: "chord", chord: "B" },
-        { type: "chord", chord: "Bm" },
-        { type: "chord", chord: "Baug" },
-        { type: "chord", chord: "B6" },
-        { type: "chord", chord: "Bm6" },
-        { type: "chord", chord: "B7" },
-        { type: "chord", chord: "Bmaj7" },
-        { type: "chord", chord: "Bm7" },
-        { type: "chord", chord: "Bm7b5" },
-        { type: "chord", chord: "B7sus4" },
-        { type: "chord", chord: "Bdim7" },
-        { type: "chord", chord: "B9" },
-        { type: "chord", chord: "Bmaj9" },
-        { type: "chord", chord: "Bm9" },
-      ];
+          // キャンバスをクリア
+          this.canvasCtx.fillStyle = '#f8f9fa';
+          this.canvasCtx.fillRect(0, 0, width, height);
 
-      const challengeDiv = document.getElementById("challenge");
-      const inputLogDiv = document.getElementById("input-log");
-      const resultDiv = document.getElementById("result");
-      const timerDiv = document.getElementById("timer");
-      const keyElements = {};
+          // 波形データと周波数データを取得
+          this.analyser.getByteTimeDomainData(this.waveformData);
+          this.analyser.getByteFrequencyData(this.frequencyData);
 
-      document.querySelectorAll(".white-key, .black-key").forEach((key) => {
-        keyElements[key.dataset.note] = key;
+          // 上半分に波形を描画
+          this.canvasCtx.lineWidth = 2;
+          this.canvasCtx.strokeStyle = '#2196F3';
+          this.canvasCtx.beginPath();
+
+          const sliceWidth = width / this.analyser.frequencyBinCount;
+          let x = 0;
+
+          for (let i = 0; i < this.analyser.frequencyBinCount; i++) {
+            const v = this.waveformData[i] / 128.0;
+            const y = (v * height / 4) + height / 4; // 上半分に表示
+
+            if (i === 0) {
+              this.canvasCtx.moveTo(x, y);
+            } else {
+              this.canvasCtx.lineTo(x, y);
+            }
+            x += sliceWidth;
+          }
+
+          this.canvasCtx.stroke();
+
+          // 下半分に周波数スペクトラムを描画
+          const barWidth = width / 256;
+          let barX = 0;
+
+          for (let i = 0; i < 256; i++) {
+            const barHeight = (this.frequencyData[i] / 255.0) * (height / 2);
+
+            // 周波数に応じて色を変化
+            const hue = (i / 256) * 360;
+            this.canvasCtx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+
+            this.canvasCtx.fillRect(
+              barX,
+              height - barHeight,
+              barWidth - 1,
+              barHeight
+            );
+
+            barX += barWidth;
+          }
+
+          // 現在の音名を表示
+          if (this.currentNote) {
+            this.canvasCtx.font = '20px Arial';
+            this.canvasCtx.fillStyle = '#333';
+            this.canvasCtx.textAlign = 'right';
+            this.canvasCtx.fillText(`Current Note: ${this.currentNote}`, width - 10, 30);
+          }
+
+          // 区切り線を描画
+          this.canvasCtx.strokeStyle = '#ccc';
+          this.canvasCtx.lineWidth = 1;
+          this.canvasCtx.beginPath();
+          this.canvasCtx.moveTo(0, height / 2);
+          this.canvasCtx.lineTo(width, height / 2);
+          this.canvasCtx.stroke();
+        };
+
+        draw();
+      }
+
+      stopDrawing() {
+        this.isDrawing = false;
+        this.currentNote = null;
+      }
+    }
+
+    // SoundPlayerのインスタンスを生成
+    const soundPlayer = new SoundPlayer();
+
+    // コード定義
+    const chordDefinitions = {
+      // C
+      C: ["C", "E", "G"],
+      Cm: ["C", "Eb", "G"],
+      Caug: ["C", "E", "G#"],
+      C6: ["C", "E", "G", "A"],
+      Cm6: ["C", "Eb", "G", "A"],
+      C7: ["C", "E", "G", "Bb"],
+      Cmaj7: ["C", "E", "G", "B"],
+      Cm7: ["C", "Eb", "G", "Bb"],
+      Cm7b5: ["C", "Eb", "Gb", "Bb"],
+      C7sus4: ["C", "F", "G", "Bb"],
+      Cdim7: ["C", "Eb", "Gb", "A"],
+      C9: ["C", "E", "G", "Bb", "D"],
+      Cmaj9: ["C", "E", "G", "B", "D"],
+      Cm9: ["C", "Eb", "G", "Bb", "D"],
+
+      // D
+      D: ["D", "F#", "A"],
+      Dm: ["D", "F", "A"],
+      Daug: ["D", "F#", "A#"],
+      D6: ["D", "F#", "A", "B"],
+      Dm6: ["D", "F", "A", "B"],
+      D7: ["D", "F#", "A", "C"],
+      Dmaj7: ["D", "F#", "A", "C#"],
+      Dm7: ["D", "F", "A", "C"],
+      Dm7b5: ["D", "F", "Ab", "C"],
+      D7sus4: ["D", "G", "A", "C"],
+      Ddim7: ["D", "F", "Ab", "B"],
+      D9: ["D", "F#", "A", "C", "E"],
+      Dmaj9: ["D", "F#", "A", "C#", "E"],
+      Dm9: ["D", "F", "A", "C", "E"],
+
+      // E
+      E: ["E", "G#", "B"],
+      Em: ["E", "G", "B"],
+      Eaug: ["E", "G#", "B#"],
+      E6: ["E", "G#", "B", "C#"],
+      Em6: ["E", "G", "B", "C#"],
+      E7: ["E", "G#", "B", "D"],
+      Emaj7: ["E", "G#", "B", "D#"],
+      Em7: ["E", "G", "B", "D"],
+      Em7b5: ["E", "G", "Bb", "D"],
+      E7sus4: ["E", "A", "B", "D"],
+      Edim7: ["E", "G", "Bb", "C#"],
+      E9: ["E", "G#", "B", "D", "F#"],
+      Emaj9: ["E", "G#", "B", "D#", "F#"],
+      Em9: ["E", "G", "B", "D", "F#"],
+
+      // F
+      F: ["F", "A", "C"],
+      Fm: ["F", "Ab", "C"],
+      Faug: ["F", "A", "C#"],
+      F6: ["F", "A", "C", "D"],
+      Fm6: ["F", "Ab", "C", "D"],
+      F7: ["F", "A", "C", "Eb"],
+      Fmaj7: ["F", "A", "C", "E"],
+      Fm7: ["F", "Ab", "C", "Eb"],
+      Fm7b5: ["F", "Ab", "B", "Eb"],
+      F7sus4: ["F", "Bb", "C", "Eb"],
+      Fdim7: ["F", "Ab", "B", "D"],
+      F9: ["F", "A", "C", "Eb", "G"],
+      Fmaj9: ["F", "A", "C", "E", "G"],
+      Fm9: ["F", "Ab", "C", "Eb", "G"],
+
+      // G
+      G: ["G", "B", "D"],
+      Gm: ["G", "Bb", "D"],
+      Gaug: ["G", "B", "D#"],
+      G6: ["G", "B", "D", "E"],
+      Gm6: ["G", "Bb", "D", "E"],
+      G7: ["G", "B", "D", "F"],
+      Gmaj7: ["G", "B", "D", "F#"],
+      Gm7: ["G", "Bb", "D", "F"],
+      Gm7b5: ["G", "Bb", "Db", "F"],
+      G7sus4: ["G", "C", "D", "F"],
+      Gdim7: ["G", "Bb", "Db", "E"],
+      G9: ["G", "B", "D", "F", "A"],
+      Gmaj9: ["G", "B", "D", "F#", "A"],
+      Gm9: ["G", "Bb", "D", "F", "A"],
+
+      // A
+      A: ["A", "C#", "E"],
+      Am: ["A", "C", "E"],
+      Aaug: ["A", "C#", "E#"],
+      A6: ["A", "C#", "E", "F#"],
+      Am6: ["A", "C", "E", "F#"],
+      A7: ["A", "C#", "E", "G"],
+      Amaj7: ["A", "C#", "E", "G#"],
+      Am7: ["A", "C", "E", "G"],
+      Am7b5: ["A", "C", "Eb", "G"],
+      A7sus4: ["A", "D", "E", "G"],
+      Adim7: ["A", "C", "Eb", "F#"],
+      A9: ["A", "C#", "E", "G", "B"],
+      Amaj9: ["A", "C#", "E", "G#", "B"],
+      Am9: ["A", "C", "E", "G", "B"],
+
+      // B
+      B: ["B", "D#", "F#"],
+      Bm: ["B", "D", "F#"],
+      Baug: ["B", "D#", "F##"],
+      B6: ["B", "D#", "F#", "G#"],
+      Bm6: ["B", "D", "F#", "G#"],
+      B7: ["B", "D#", "F#", "A"],
+      Bmaj7: ["B", "D#", "F#", "A#"],
+      Bm7: ["B", "D", "F#", "A"],
+      Bm7b5: ["B", "D", "F", "A"],
+      B7sus4: ["B", "E", "F#", "A"],
+      Bdim7: ["B", "D", "F", "Ab"],
+      B9: ["B", "D#", "F#", "A", "C#"],
+      Bmaj9: ["B", "D#", "F#", "A#", "C#"],
+      Bm9: ["B", "D", "F#", "A", "C#"],
+    };
+
+    const problems = [
+      // C
+      { type: "chord", chord: "C" },
+      { type: "chord", chord: "Cm" },
+      { type: "chord", chord: "Caug" },
+      { type: "chord", chord: "C6" },
+      { type: "chord", chord: "Cm6" },
+      { type: "chord", chord: "C7" },
+      { type: "chord", chord: "Cmaj7" },
+      { type: "chord", chord: "Cm7" },
+      { type: "chord", chord: "Cm7b5" },
+      { type: "chord", chord: "C7sus4" },
+      { type: "chord", chord: "Cdim7" },
+      { type: "chord", chord: "C9" },
+      { type: "chord", chord: "Cmaj9" },
+      { type: "chord", chord: "Cm9" },
+
+      // D
+      { type: "chord", chord: "D" },
+      { type: "chord", chord: "Dm" },
+      { type: "chord", chord: "Daug" },
+      { type: "chord", chord: "D6" },
+      { type: "chord", chord: "Dm6" },
+      { type: "chord", chord: "D7" },
+      { type: "chord", chord: "Dmaj7" },
+      { type: "chord", chord: "Dm7" },
+      { type: "chord", chord: "Dm7b5" },
+      { type: "chord", chord: "D7sus4" },
+      { type: "chord", chord: "Ddim7" },
+      { type: "chord", chord: "D9" },
+      { type: "chord", chord: "Dmaj9" },
+      { type: "chord", chord: "Dm9" },
+
+      // E
+      { type: "chord", chord: "E" },
+      { type: "chord", chord: "Em" },
+      { type: "chord", chord: "Eaug" },
+      { type: "chord", chord: "E6" },
+      { type: "chord", chord: "Em6" },
+      { type: "chord", chord: "E7" },
+      { type: "chord", chord: "Emaj7" },
+      { type: "chord", chord: "Em7" },
+      { type: "chord", chord: "Em7b5" },
+      { type: "chord", chord: "E7sus4" },
+      { type: "chord", chord: "Edim7" },
+      { type: "chord", chord: "E9" },
+      { type: "chord", chord: "Emaj9" },
+      { type: "chord", chord: "Em9" },
+
+      // F
+      { type: "chord", chord: "F" },
+      { type: "chord", chord: "Fm" },
+      { type: "chord", chord: "Faug" },
+      { type: "chord", chord: "F6" },
+      { type: "chord", chord: "Fm6" },
+      { type: "chord", chord: "F7" },
+      { type: "chord", chord: "Fmaj7" },
+      { type: "chord", chord: "Fm7" },
+      { type: "chord", chord: "Fm7b5" },
+      { type: "chord", chord: "F7sus4" },
+      { type: "chord", chord: "Fdim7" },
+      { type: "chord", chord: "F9" },
+      { type: "chord", chord: "Fmaj9" },
+      { type: "chord", chord: "Fm9" },
+
+      // G
+      { type: "chord", chord: "G" },
+      { type: "chord", chord: "Gm" },
+      { type: "chord", chord: "Gaug" },
+      { type: "chord", chord: "G6" },
+      { type: "chord", chord: "Gm6" },
+      { type: "chord", chord: "G7" },
+      { type: "chord", chord: "Gmaj7" },
+      { type: "chord", chord: "Gm7" },
+      { type: "chord", chord: "Gm7b5" },
+      { type: "chord", chord: "G7sus4" },
+      { type: "chord", chord: "Gdim7" },
+      { type: "chord", chord: "G9" },
+      { type: "chord", chord: "Gmaj9" },
+      { type: "chord", chord: "Gm9" },
+
+      // A
+      { type: "chord", chord: "A" },
+      { type: "chord", chord: "Am" },
+      { type: "chord", chord: "Aaug" },
+      { type: "chord", chord: "A6" },
+      { type: "chord", chord: "Am6" },
+      { type: "chord", chord: "A7" },
+      { type: "chord", chord: "Amaj7" },
+      { type: "chord", chord: "Am7" },
+      { type: "chord", chord: "Am7b5" },
+      { type: "chord", chord: "A7sus4" },
+      { type: "chord", chord: "Adim7" },
+      { type: "chord", chord: "A9" },
+      { type: "chord", chord: "Amaj9" },
+      { type: "chord", chord: "Am9" },
+
+      // B
+      { type: "chord", chord: "B" },
+      { type: "chord", chord: "Bm" },
+      { type: "chord", chord: "Baug" },
+      { type: "chord", chord: "B6" },
+      { type: "chord", chord: "Bm6" },
+      { type: "chord", chord: "B7" },
+      { type: "chord", chord: "Bmaj7" },
+      { type: "chord", chord: "Bm7" },
+      { type: "chord", chord: "Bm7b5" },
+      { type: "chord", chord: "B7sus4" },
+      { type: "chord", chord: "Bdim7" },
+      { type: "chord", chord: "B9" },
+      { type: "chord", chord: "Bmaj9" },
+      { type: "chord", chord: "Bm9" },
+    ];
+
+    const challengeDiv = document.getElementById("challenge");
+    const inputLogDiv = document.getElementById("input-log");
+    const resultDiv = document.getElementById("result");
+    const timerDiv = document.getElementById("timer");
+    const keyElements = {};
+
+    document.querySelectorAll(".white-key, .black-key").forEach((key) => {
+      keyElements[key.dataset.note] = key;
+    });
+
+    let currentProblem = {};
+    let userInput = new Set();
+    let score = { correct: 0, incorrect: 0 };
+    let questionCount = 0;
+    let timerInterval;
+    let startTime = 0;
+
+    // スタートボタンをクリックした時の処理
+    document
+      .getElementById("start-button")
+      .addEventListener("click", async function () {
+        // 音声ファイルを読み込む
+        await soundPlayer.loadSounds();
+
+        document.getElementById("start-screen").style.display = "none";
+        document.getElementById("game-screen").style.display = "block";
+        questionCount = 0;
+        score = { correct: 0, incorrect: 0 };
+        nextQuestion();
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 10);
       });
 
-      let currentProblem = {};
-      let userInput = new Set();
-      let score = { correct: 0, incorrect: 0 };
-      let questionCount = 0;
-      let timerInterval;
-      let startTime = 0;
+    // 終了ボタンをクリックした時の処理
+    document
+      .getElementById("end-button")
+      .addEventListener("click", function () {
+        score = { correct: 0, incorrect: 0 };
+        questionCount = 0;
+        userInput.clear();
+        clearInterval(timerInterval);
+        clearChordHint(); // ヒントをクリア
+        document.getElementById("end-screen").style.display = "none";
+        document.getElementById("start-screen").style.display = "block";
+      });
 
-      // スタートボタンをクリックした時の処理
-      document
-        .getElementById("start-button")
-        .addEventListener("click", function () {
-          document.getElementById("start-screen").style.display = "none"; // スタート画面を隠す
-          document.getElementById("game-screen").style.display = "block"; // ゲーム画面を表示
-          questionCount = 0; // カウントを確実にリセット
-          score = { correct: 0, incorrect: 0 }; // スコアもリセット
-          nextQuestion();
-          startTime = Date.now(); // タイマー開始
-          timerInterval = setInterval(updateTimer, 10); // タイマー更新
-        });
+    // タイマー更新
+    function updateTimer() {
+      const elapsedTime = Date.now() - startTime;
+      const hours = String(Math.floor(elapsedTime / 3600000)).padStart(
+        2,
+        "0"
+      );
+      const minutes = String(
+        Math.floor((elapsedTime % 3600000) / 60000)
+      ).padStart(2, "0");
+      const seconds = String(
+        Math.floor((elapsedTime % 60000) / 1000)
+      ).padStart(2, "0");
+      const milliseconds = String(
+        Math.floor((elapsedTime % 1000) / 10)
+      ).padStart(2, "0");
 
-      // 終了ボタンをクリックした時の処理
-      document
-        .getElementById("end-button")
-        .addEventListener("click", function () {
-          score = { correct: 0, incorrect: 0 };
-          questionCount = 0;
-          userInput.clear();
-          clearInterval(timerInterval);
-          startTime = 0;
-          timerDiv.innerHTML = "00:00:00.00";
-          document.getElementById("end-screen").style.display = "none";
-          document.getElementById("start-screen").style.display = "block";
-
-          // 問題表示もクリア
-          challengeDiv.textContent = "";
-          inputLogDiv.textContent = "入力: なし";
-          resultDiv.textContent = "";
-          document.getElementById("question-count").textContent = "0/10"; // 5から10に変更
-        });
-
-      // タイマー更新
-      function updateTimer() {
-        const elapsedTime = Date.now() - startTime;
-        const hours = String(Math.floor(elapsedTime / 3600000)).padStart(
-          2,
-          "0"
-        );
-        const minutes = String(
-          Math.floor((elapsedTime % 3600000) / 60000)
-        ).padStart(2, "0");
-        const seconds = String(
-          Math.floor((elapsedTime % 60000) / 1000)
-        ).padStart(2, "0");
-        const milliseconds = String(
-          Math.floor((elapsedTime % 1000) / 10)
-        ).padStart(2, "0");
-
-        timerDiv.innerHTML = `
+      timerDiv.innerHTML = `
         <span class="timer-unit">${hours}</span>
         <span class="timer-separator">時</span>
         <span class="timer-unit">${minutes}</span>
@@ -560,254 +839,334 @@
         <span class="timer-separator">秒</span>
         <span class="timer-ms">${milliseconds}</span>
       `;
-      }
+    }
 
-      // 問題をランダムに出題
-      function nextQuestion() {
-        if (questionCount < 10) {
-          // 5から10に変更
-          const randomProblem =
-            problems[Math.floor(Math.random() * problems.length)];
-          currentProblem = randomProblem;
-          challengeDiv.textContent = `${currentProblem.chord}コードを入力してください`;
-          userInput.clear();
-          inputLogDiv.textContent = `入力: なし`;
-          resultDiv.textContent = "";
-          questionCount++;
-          updateQuestionCount();
-        } else {
-          showResult();
-        }
-      }
+    // グローバル変数として追加
+    let hintEnabled = true;
 
-      // 現在の問題数を更新
-      function updateQuestionCount() {
-        const questionCountDiv = document.getElementById("question-count");
-        questionCountDiv.textContent = `${questionCount}/10`; // 5から10に変更
-      }
+    // ヒントの表示制御関数
+    function showChordHint(chordName) {
+      // ヒントが無効の場合は表示しない
+      if (!hintEnabled) return;
 
-      // 回答判定
-      function checkAnswer() {
-        const correctNotes = chordDefinitions[currentProblem.chord];
-        const isCorrect =
-          [...userInput].every((note) => correctNotes.includes(note)) &&
-          userInput.size === correctNotes.length;
+      // 以下は既存のコード
+      clearChordHint();
+      const notes = chordDefinitions[chordName];
 
-        if (isCorrect) {
-          score.correct++;
-          resultDiv.textContent = "正解！";
-          resultDiv.style.color = "green";
-        } else {
-          score.incorrect++;
-          resultDiv.textContent = "不正解！";
-          resultDiv.style.color = "red";
-        }
-
-        // 1秒後に次の問題に進む
-        setTimeout(nextQuestion, 1000);
-      }
-
-      // 結果表示
-      function showResult() {
-        clearInterval(timerInterval);
-        document.getElementById("game-screen").style.display = "none";
-        document.getElementById("end-screen").style.display = "block";
-
-        // 合計が10問になることを確認
-        const total = score.correct + score.incorrect;
-        if (total === 10) {
-          document.getElementById(
-            "final-result"
-          ).textContent = `正解: ${score.correct}問　不正解: ${score.incorrect}問`;
-        } else {
-          // 万が一合計が10問にならない場合の処理
-          console.error("Total questions does not equal 10");
-          document.getElementById("final-result").textContent = `正解: ${
-            score.correct
-          }問　不正解: ${10 - score.correct}問`;
-        }
-
-        document.getElementById(
-          "final-time"
-        ).innerHTML = `経過時間: ${timerDiv.innerHTML}`;
-      }
-
-      // MIDIメッセージを処理する
-      function handleMIDIMessage(message) {
-        const [status, note, velocity] = message.data;
-        const noteNames = midiNoteToNoteName[note];
-
-        if (status === 144 && velocity > 0 && noteNames) {
-          // オクターブを除いた基本的な音名を使用
-          const baseNote = noteNames[1]; // オクターブなしの音名を使用
-          userInput.add(baseNote);
-
-          // キー表示の更新（視覚的フィードバック）
-          keyElements[noteNames[0]]?.classList.add(
-            noteNames[0].includes("#") ? "pressed-black" : "pressed-white"
-          );
-
-          // 入力表示の更新
-          inputLogDiv.textContent = `入力: ${[...userInput].join(", ")}`;
-
-          // 和音判定
-          const correctNotes = chordDefinitions[currentProblem.chord];
-          if (userInput.size === correctNotes.length) {
-            const isCorrect = isChordCorrect(userInput, correctNotes);
-            handleAnswer(isCorrect);
+      // 各音に対してヒントを表示
+      notes.forEach((note) => {
+        // 各オクターブの鍵盤に対してヒントを表示
+        ["3", "4"].forEach((octave) => {
+          const keyElement = document.getElementById(`key-${note}${octave}`);
+          if (keyElement) {
+            if (note.includes("#")) {
+              keyElement.classList.add("hint-black");
+            } else {
+              keyElement.classList.add("hint-white");
+            }
           }
-        } else if (status === 128 || (status === 144 && velocity === 0)) {
-          // キーを離したときの処理
-          keyElements[noteNames[0]]?.classList.remove(
-            noteNames[0].includes("#") ? "pressed-black" : "pressed-white"
-          );
-        }
-      }
 
-      // 和音の正誤判定を行う補助関数
-      function isChordCorrect(inputNotes, correctNotes) {
-        // 音名の同値判定用のマッピング
-        const equivalentNotes = {
-          "C#": "Db",
-          Db: "C#",
-          "D#": "Eb",
-          Eb: "D#",
-          "F#": "Gb",
-          Gb: "F#",
-          "G#": "Ab",
-          Ab: "G#",
-          "A#": "Bb",
-          Bb: "A#",
-        };
+          // シャープとフラットの対応
+          const sharpToFlat = {
+            "C#": "Db",
+            "D#": "Eb",
+            "F#": "Gb",
+            "G#": "Ab",
+            "A#": "Bb",
+          };
+          const flatToSharp = {
+            Db: "C#",
+            Eb: "D#",
+            Gb: "F#",
+            Ab: "G#",
+            Bb: "A#",
+          };
 
-        // 入力された音がすべて正解の音と一致するかチェック
-        return correctNotes.every((correctNote) => {
-          return [...inputNotes].some((inputNote) => {
-            // 直接一致
-            if (inputNote === correctNote) return true;
-            // 異名同音での一致
-            if (equivalentNotes[inputNote] === correctNote) return true;
-            // オクターブ違いでの一致
-            const baseInputNote = inputNote.replace(/[0-9]/g, "");
-            const baseCorrectNote = correctNote.replace(/[0-9]/g, "");
-            return (
-              baseInputNote === baseCorrectNote ||
-              equivalentNotes[baseInputNote] === baseCorrectNote
+          // 異名同音の鍵盤にもヒントを表示
+          const enharmonicNote = sharpToFlat[note] || flatToSharp[note];
+          if (enharmonicNote) {
+            const enharmonicKey = document.getElementById(
+              `key-${enharmonicNote}${octave}`
             );
-          });
-        });
-      }
-
-      // 回答の処理を行う関数
-      function handleAnswer(isCorrect) {
-        if (isCorrect) {
-          score.correct++;
-          resultDiv.textContent = "正解！";
-          resultDiv.style.color = "green";
-        } else {
-          score.incorrect++;
-          resultDiv.textContent = "不正解！";
-          resultDiv.style.color = "red";
-        }
-        setTimeout(nextQuestion, 1000);
-      }
-
-      const midiNoteToNoteName = {
-        // 1オクターブ目 (C3-B3)
-        48: ["C3", "C"],
-        49: ["C#3", "Db3", "C#", "Db"],
-        50: ["D3", "D"],
-        51: ["D#3", "Eb3", "D#", "Eb"],
-        52: ["E3", "E"],
-        53: ["F3", "F"],
-        54: ["F#3", "Gb3", "F#", "Gb"],
-        55: ["G3", "G"],
-        56: ["G#3", "Ab3", "G#", "Ab"],
-        57: ["A3", "A"],
-        58: ["A#3", "Bb3", "A#", "Bb"],
-        59: ["B3", "B"],
-
-        // 2オクターブ目 (C4-B4)
-        60: ["C4", "C"],
-        61: ["C#4", "Db4", "C#", "Db"],
-        62: ["D4", "D"],
-        63: ["D#4", "Eb4", "D#", "Eb"],
-        64: ["E4", "E"],
-        65: ["F4", "F"],
-        66: ["F#4", "Gb4", "F#", "Gb"],
-        67: ["G4", "G"],
-        68: ["G#4", "Ab4", "G#", "Ab"],
-        69: ["A4", "A"],
-        70: ["A#4", "Bb4", "A#", "Bb"],
-        71: ["B4", "B"],
-      };
-      // MIDIの初期化
-      function initMIDI() {
-        const midiStatusDiv = document.getElementById("midi-status");
-
-        if (navigator.requestMIDIAccess) {
-          navigator
-            .requestMIDIAccess()
-            .then((access) => {
-              // Setを使用して重複を防ぐ
-              const devices = new Set();
-
-              // 接続されているデバイスを確認
-              for (let input of access.inputs.values()) {
-                devices.add(input.name || "名称不明のMIDIデバイス");
-                input.onmidimessage = handleMIDIMessage;
-              }
-
-              // デバイス情報を表示
-              if (devices.size > 0) {
-                midiStatusDiv.textContent = `接続中のMIDIキーボード： ${[
-                  ...devices,
-                ].join(", ")}`;
-                midiStatusDiv.style.color = "#2e7d32";
+            if (enharmonicKey) {
+              if (enharmonicNote.includes("#")) {
+                enharmonicKey.classList.add("hint-black");
               } else {
-                midiStatusDiv.textContent =
-                  "MIDIキーボードが接続されていません";
-                midiStatusDiv.style.color = "#c62828";
+                enharmonicKey.classList.add("hint-white");
               }
+            }
+          }
+        });
+      });
+    }
 
-              // MIDIデバイスの接続/切断を監視
-              access.onstatechange = function (e) {
-                if (e.port.type === "input") {
-                  if (e.port.state === "connected") {
-                    devices.add(e.port.name || "名称不明のMIDIデバイス");
-                    e.port.onmidimessage = handleMIDIMessage;
-                  } else {
-                    devices.delete(e.port.name);
-                  }
+    // ヒント設定の初期化とイベントリスナーの追加
+    document.addEventListener("DOMContentLoaded", function () {
+      const hintToggle = document.getElementById("hint-toggle");
 
-                  // 状態表示を更新
-                  if (devices.size > 0) {
-                    midiStatusDiv.textContent = `接続中のMIDIキーボード: ${[
-                      ...devices,
-                    ].join(", ")}`;
-                    midiStatusDiv.style.color = "#2e7d32";
-                  } else {
-                    midiStatusDiv.textContent =
-                      "MIDIキーボードが接続されていません";
-                    midiStatusDiv.style.color = "#c62828";
-                  }
-                }
-              };
-            })
-            .catch((err) => {
-              midiStatusDiv.textContent =
-                "MIDIデバイスへのアクセスに失敗しました";
-              midiStatusDiv.style.color = "#c62828";
-              console.error("MIDI Access Error:", err);
-            });
-        } else {
-          midiStatusDiv.textContent =
-            "このブラウザはMIDIをサポートしていません";
-          midiStatusDiv.style.color = "#c62828";
-          console.log("MIDIはサポートされていません");
+      // 初期状態の設定
+      hintEnabled = hintToggle.checked;
+
+      // トグルスイッチの変更を監視
+      hintToggle.addEventListener("change", function () {
+        hintEnabled = this.checked;
+        if (!hintEnabled) {
+          clearChordHint(); // ヒントをオフにしたら現在のヒント表示をクリア
+        } else if (currentProblem.chord) {
+          showChordHint(currentProblem.chord); // ヒントをオンにしたら現在の問題のヒントを表示
         }
+      });
+    });
+
+    // ヒントをクリアする関数
+    function clearChordHint() {
+      document.querySelectorAll(".white-key, .black-key").forEach((key) => {
+        key.classList.remove("hint-white", "hint-black");
+      });
+    }
+
+    // 問題をランダムに出題
+    function nextQuestion() {
+      if (questionCount < 10) {
+        const randomProblem =
+          problems[Math.floor(Math.random() * problems.length)];
+        currentProblem = randomProblem;
+        challengeDiv.textContent = `${currentProblem.chord}コードを入力してください`;
+        userInput.clear();
+        inputLogDiv.textContent = `入力: なし`;
+        resultDiv.textContent = "";
+        questionCount++;
+        updateQuestionCount();
+
+        // ヒントを表示
+        showChordHint(currentProblem.chord);
+      } else {
+        showResult();
       }
-      initMIDI();
-    </script>
-  </body>
+    }
+
+    // 現在の問題数を更新
+    function updateQuestionCount() {
+      const questionCountDiv = document.getElementById("question-count");
+      questionCountDiv.textContent = `${questionCount}/10`; // 5から10に変更
+    }
+
+    // 回答判定
+    function checkAnswer() {
+      const correctNotes = chordDefinitions[currentProblem.chord];
+      const isCorrect =
+        [...userInput].every((note) => correctNotes.includes(note)) &&
+        userInput.size === correctNotes.length;
+
+      if (isCorrect) {
+        score.correct++;
+        resultDiv.textContent = "正解！";
+        resultDiv.style.color = "green";
+      } else {
+        score.incorrect++;
+        resultDiv.textContent = "不正解！";
+        resultDiv.style.color = "red";
+      }
+
+      // 1秒後に次の問題に進む
+      setTimeout(nextQuestion, 1000);
+    }
+
+    // 結果表示
+    function showResult() {
+      clearInterval(timerInterval);
+      soundPlayer.stopDrawing(); // 波形描画を停止
+      document.getElementById("game-screen").style.display = "none";
+      document.getElementById("end-screen").style.display = "block";
+      document.getElementById("final-result").textContent = `正解: ${score.correct}問, 不正解: ${score.incorrect}問`;
+      document.getElementById("final-time").innerHTML = `経過時間: ${timerDiv.innerHTML}`;
+    }
+
+    // MIDIメッセージを処理する
+    function handleMIDIMessage(message) {
+      const [status, note, velocity] = message.data;
+      let noteName = midiNoteToNoteName[note];
+
+      // noteNameが存在し、かつ音を鳴らすべき場合（キーを押した時）
+      if (status === 144 && velocity > 0 && noteName) {
+        // オクターブ付きの音名を保持
+        const fullNoteName = noteName; // 例：'C3'
+        // オクターブを除いた基本音名を取得（最後の数字を除去）
+        const baseNote = noteName.slice(0, -1); // 例：'C'
+
+        userInput.add(baseNote);
+
+        // 音を鳴らす（オクターブ付きの音名を使用）
+        soundPlayer.playNote(fullNoteName);
+
+        // キー表示の更新
+        keyElements[fullNoteName]?.classList.add(
+          fullNoteName.includes('#') ? 'pressed-black' : 'pressed-white'
+        );
+
+        inputLogDiv.textContent = `入力: ${[...userInput].join(', ')}`;
+
+        if (userInput.size === chordDefinitions[currentProblem.chord].length) {
+          checkAnswer();
+        }
+      } else if (status === 128 || (status === 144 && velocity === 0)) {
+        // キーを離した時
+        keyElements[noteName]?.classList.remove(
+          noteName.includes('#') ? 'pressed-black' : 'pressed-white'
+        );
+      }
+    }
+
+    // 和音の正誤判定を行う補助関数
+    function isChordCorrect(inputNotes, correctNotes) {
+      // 音名の同値判定用のマッピング
+      const equivalentNotes = {
+        "C#": "Db",
+        Db: "C#",
+        "D#": "Eb",
+        Eb: "D#",
+        "F#": "Gb",
+        Gb: "F#",
+        "G#": "Ab",
+        Ab: "G#",
+        "A#": "Bb",
+        Bb: "A#",
+      };
+
+      // 入力された音がすべて正解の音と一致するかチェック
+      return correctNotes.every((correctNote) => {
+        return [...inputNotes].some((inputNote) => {
+          // 直接一致
+          if (inputNote === correctNote) return true;
+          // 異名同音での一致
+          if (equivalentNotes[inputNote] === correctNote) return true;
+          // オクターブ違いでの一致
+          const baseInputNote = inputNote.replace(/[0-9]/g, "");
+          const baseCorrectNote = correctNote.replace(/[0-9]/g, "");
+          return (
+            baseInputNote === baseCorrectNote ||
+            equivalentNotes[baseInputNote] === baseCorrectNote
+          );
+        });
+      });
+    }
+
+    // 回答の処理を行う関数
+    function handleAnswer(isCorrect) {
+      if (isCorrect) {
+        score.correct++;
+        resultDiv.textContent = "正解！";
+        resultDiv.style.color = "green";
+      } else {
+        score.incorrect++;
+        resultDiv.textContent = "不正解！";
+        resultDiv.style.color = "red";
+      }
+      setTimeout(nextQuestion, 1000);
+    }
+
+    const midiNoteToNoteName = {
+      // 1オクターブ目 (C3-B3)
+      48: "C3",
+      49: "C#3",
+      50: "D3",
+      51: "D#3",
+      52: "E3",
+      53: "F3",
+      54: "F#3",
+      55: "G3",
+      56: "G#3",
+      57: "A3",
+      58: "A#3",
+      59: "B3",
+      // 2オクターブ目 (C4-B4)
+      60: "C4",
+      61: "C#4",
+      62: "D4",
+      63: "D#4",
+      64: "E4",
+      65: "F4",
+      66: "F#4",
+      67: "G4",
+      68: "G#4",
+      69: "A4",
+      70: "A#4",
+      71: "B4"
+    };
+    // MIDIの初期化
+    function initMIDI() {
+      const midiStatusDiv = document.getElementById("midi-status");
+
+      if (navigator.requestMIDIAccess) {
+        navigator
+          .requestMIDIAccess()
+          .then((access) => {
+            // Setを使用して重複を防ぐ
+            const devices = new Set();
+
+            // 接続されているデバイスを確認
+            for (let input of access.inputs.values()) {
+              devices.add(input.name || "名称不明のMIDIデバイス");
+              input.onmidimessage = handleMIDIMessage;
+            }
+
+            // デバイス情報を表示
+            if (devices.size > 0) {
+              midiStatusDiv.textContent = `接続中のMIDIキーボード： ${[
+                ...devices,
+              ].join(", ")}`;
+              midiStatusDiv.style.color = "#2e7d32";
+            } else {
+              midiStatusDiv.textContent =
+                "MIDIキーボードが接続されていません";
+              midiStatusDiv.style.color = "#c62828";
+            }
+
+            // MIDIデバイスの接続/切断を監視
+            access.onstatechange = function (e) {
+              if (e.port.type === "input") {
+                if (e.port.state === "connected") {
+                  devices.add(e.port.name || "名称不明のMIDIデバイス");
+                  e.port.onmidimessage = handleMIDIMessage;
+                } else {
+                  devices.delete(e.port.name);
+                }
+
+                // 状態表示を更新
+                if (devices.size > 0) {
+                  midiStatusDiv.textContent = `接続中のMIDIキーボード: ${[
+                    ...devices,
+                  ].join(", ")}`;
+                  midiStatusDiv.style.color = "#2e7d32";
+                } else {
+                  midiStatusDiv.textContent =
+                    "MIDIキーボードが接続されていません";
+                  midiStatusDiv.style.color = "#c62828";
+                }
+              }
+            };
+          })
+          .catch((err) => {
+            midiStatusDiv.textContent =
+              "MIDIデバイスへのアクセスに失敗しました";
+            midiStatusDiv.style.color = "#c62828";
+            console.error("MIDI Access Error:", err);
+          });
+      } else {
+        midiStatusDiv.textContent =
+          "このブラウザはMIDIをサポートしていません";
+        midiStatusDiv.style.color = "#c62828";
+        console.log("MIDIはサポートされていません");
+      }
+    }
+
+    // エラーハンドリング（initMIDI()の前に追加）
+    soundPlayer.loadSounds().catch((error) => {
+      console.error("Failed to load sound files:", error);
+    });
+
+    initMIDI();
+  </script>
+</body>
+
 </html>
