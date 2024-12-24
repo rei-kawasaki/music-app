@@ -49,27 +49,27 @@
   ],
   "audio": [
     {
-      "audioSrc": "audio/C.mp3",
+      "audioSrc": "audio/C3.wav",
       "correctAnswer": "C"
     },
     {
-      "audioSrc": "audio/D.mp3",
+      "audioSrc": "audio/D3.wav",
       "correctAnswer": "D"
     },
     {
-      "audioSrc": "audio/E.mp3",
+      "audioSrc": "audio/E3.wav",
       "correctAnswer": "E"
     },
     {
-      "audioSrc": "audio/F.mp3",
+      "audioSrc": "audio/F3.wav",
       "correctAnswer": "F"
     },
     {
-      "audioSrc": "audio/G.mp3",
+      "audioSrc": "audio/G3.wav",
       "correctAnswer": "G"
     },
     {
-      "audioSrc": "audio/A.mp3",
+      "audioSrc": "audio/A3.wav",
       "correctAnswer": "A"
     }
   ],
