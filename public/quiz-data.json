@@ -1,63 +1,291 @@
 {
   "multiple": [
     {
-      "question": "音符の種類で最も長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
-      "correctAnswer": "A"
-    },
-    {
-      "question": "音符の種類で最も短い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 32分音符",
-      "correctAnswer": "D"
-    },
-    {
-      "question": "音符の種類で2番目に長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "question": "ジャズで「スイング」とは何を表現していますか？\nA. 楽器を振る\nB. リズムの揺れ感\nC. 速いテンポ\nD. 大きな音で演奏する",
       "correctAnswer": "B"
     },
     {
-      "question": "音符の種類で2番目に短い音符は？\nA. 全音符\nB. 2分音符\nC. 16分音符\nD. 32分音符",
+      "question": "ジャズで最もよく使われる拍子は何ですか？\nA. 3拍子\nB. 4拍子\nC. 5拍子\nD. 6拍子",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "「メロディー」を別の言い方で表すと何ですか？\nA. リズム\nB. ハーモニー\nC. 主旋律\nD. ベースライン",
       "correctAnswer": "C"
     },
     {
-      "question": "音符の種類で3番目に長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "question": "ジャズの演奏で「ソロ」とは何ですか？\nA. 1人で演奏すること\nB. 大きな音で演奏すること\nC. ゆっくり演奏すること\nD. 楽譜を見ないで演奏すること",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "「テンポ」とは何のことですか？\nA. 音の高さ\nB. 音の大きさ\nC. 曲の速さ\nD. 音の長さ",
       "correctAnswer": "C"
     },
     {
-      "question": "音符の種類で4番目に長い音符は？\nA. 全音符\nB. 2分音符\nC. 4分音符\nD. 8分音符",
+      "question": "「アドリブ」とは何ですか？\nA. その場で即興的に演奏すること\nB. 楽譜を正確に演奏すること\nC. とても速く演奏すること\nD. とても遅く演奏すること",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "「リズムセクション」に含まれる楽器は何ですか？\nA. トランペット、サックス、トロンボーン\nB. ピアノ、ベース、ドラム\nC. ギター、フルート、クラリネット\nD. バイオリン、ビオラ、チェロ",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "「コード」とは何ですか？\nA. 複数の音を同時に鳴らすこと\nB. 1つの音を鳴らすこと\nC. リズムのパターン\nD. テンポの変化",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "ジャズで「スタンダード曲」とは何ですか？\nA. とても難しい曲\nB. よく演奏される有名な曲\nC. 最新の曲\nD. クラシック音楽の曲",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "「ベース」の主な役割は何ですか？\nA. メロディーを演奏すること\nB. 常に大きな音を出すこと\nC. ソロを多く演奏すること\nD. リズムと和音の土台を作ること",
       "correctAnswer": "D"
+    },
+    {
+      "question": "「ジャムセッション」は何を意味しますか？\nA. 楽器の練習方法\nB. 楽譜の読み方\nC. コンサートの名前\nD. 即興的な合同演奏",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "「リハーサル」の目的は何ですか？\nA. 本番に向けての練習\nB. 楽器の手入れ\nC. 楽譜の作成\nD. チケットの販売",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "「バッキング」は何を意味しますか？\nA. メロディーを支える伴奏\nB. 後ろ向きに演奏すること\nC. ソロ演奏のこと\nD. 楽器の運び方",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "ドラムの基本的な役割は何ですか？\nA. メロディーを演奏\nB. 歌を歌う\nC. コードを演奏\nD. リズムを刻む",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "「音色」は何を意味しますか？\nA. 音の高さ\nB. 音の長さ\nC. 音の響きの特徴\nD. 音の強さ",
+      "correctAnswer": "C"
+    },
+    {
+      "question": "ピアノの基本的な役割として適切なものはどれですか？\nA. リズムだけを刻む\nB. メロディーとコードを演奏\nC. 常にソロを弾く\nD. 歌のみを担当",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "「フレーズ」とは何ですか？\nA. 一つのまとまりのある音の流れ\nB. 楽器の名前\nC. 演奏会場\nD. 楽譜の種類",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "ジャズで「コンボ」とは何ですか？\nA. 大きなオーケストラ\nB. 楽器の種類\nC. ソロ演奏\nD. 小編成のバンド",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "「アップテンポ」の曲の特徴は何ですか？\nA. ゆっくりしたテンポ\nB. 中くらいのテンポ\nC. 速いテンポ\nD. テンポのない曲",
+      "correctAnswer": "C"
+    },
+    {
+      "question": "「バラード」の特徴として正しいものはどれですか？\nA. とても速い曲\nB. リズミカルな曲\nC. ゆったりした曲\nD. 常に大きな音の曲",
+      "correctAnswer": "C"
+    },
+    {
+      "question": "ジャズの「トリオ」でよく見られる編成は何ですか？\nA. ドラム、ベース、トランペット\nB. ピアノ、ベース、ドラム\nC. ギター、サックス、トロンボーン\nD. ピアノ、トランペット、サックス",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "ベースの演奏方法として有名な「ウォーキングベース」とは何ですか？\nA. 歩きながら演奏すること\nB. とても遅く演奏すること\nC. とても速く演奏すること\nD. 音を順々につなげて歩くように演奏すること",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "「インプロヴィゼーション」とは何ですか？\nA. 楽譜通りの演奏\nB. 楽器の修理\nC. 録音すること\nD. 即興演奏",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "演奏で「クレッシェンド」は何を意味しますか？\nA. だんだん大きく\nB. だんだん小さく\nC. だんだん速く\nD. だんだん遅く",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "「チューニング」とは何ですか？\nA. 音程を合わせること\nB. テンポを合わせること\nC. 楽器を片付けること\nD. 楽譜を読むこと",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "「グルーヴ感」とは何ですか？\nA. 楽器の溝のこと\nB. 演奏の速さ\nC. ノリの良いリズム感\nD. 音の高さ",
+      "correctAnswer": "C"
+    },
+    {
+      "question": "「エンサンブル」で大切なことは何ですか？\nA. 一人だけ目立つこと\nB. メンバー同士の調和\nC. できるだけ大きな音を出すこと\nD. できるだけ速く演奏すること",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "演奏での「強弱」は何を意味しますか？\nA. テンポの変化\nB. 楽器の変更\nC. 音の大きさの変化\nD. メロディーの変化",
+      "correctAnswer": "C"
+    },
+    {
+      "question": "「アンサンブル」の意味は何ですか？\nA. ソロ演奏\nB. 合奏\nC. 作曲\nD. 録音",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "演奏中の「アイコンタクト」の目的は何ですか？\nA. お客さんを見ること\nB. 楽譜を見ること\nC. メンバー同士の合図\nD. 照明を見ること",
+      "correctAnswer": "C"
+    },
+    {
+      "question": "ジャズ演奏での「アインサッツ」は何を指しますか？\nA. 曲の開始の合図\nB. 演奏の終了の合図\nC. 休憩の合図\nD. テンポ変更の合図",
+      "correctAnswer": "A"
+    },
+    {
+      "question": "ジャズ演奏で「ブレイク」という用語が出てきたとき、何を意味しますか？\nA. 演奏を中断すること\nB. 他の楽器が休止し、特定の楽器が短いソロを演奏すること\nC. 楽器を壊すこと\nD. テンポを落とすこと",
+      "correctAnswer": "B"
+    },
+    {
+      "question": "ジャズバンドで演奏する際に、「トレーディング」は何を指しますか？\nA. 楽器を交換すること\nB. テンポを変更すること\nC. 楽譜を交換すること\nD. ソロを交代で演奏すること",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "ジャズ演奏で「アイコンタクト」が重要な場面はどこですか？\nA. 曲の途中でテンポを変えるとき\nB. 演奏を終えるとき\nC. ソロを交代するとき\nD. 上記の全て",
+      "correctAnswer": "D"
+    },
+    {
+      "question": "ペダルポイントの特徴として正しくないものはどれですか？\nA. 一つの音を持続する\nB. 常にルート音でなければならない\nC. テンションを生み出す効果がある\nD. 調性感を強める効果がある",
+      "correctAnswer": "B"
     }
   ],
   "free": [
     {
-      "question": "4分音符は全音符の何分の1の長さですか？数字のみで答えてください",
+      "question": "ジャズ・ワルツでは、1小節の中で(　　)拍目が特に強調されます。",
+      "correctAnswer": "1"
+    },
+    {
+      "question": "「ritardando」（略してrit.）は「(　　)」という意味です",
+      "correctAnswer": "だんだん遅くする"
+    },
+    {
+      "question": "全音符の休符は、4分休符(　　)個分の長さです。",
       "correctAnswer": "4"
     },
     {
-      "question": "8分音符は全音符の何分の1の長さですか？数字のみで答えてください",
-      "correctAnswer": "8"
+      "question": "コードネームの後ろにつく「7」（例：A7）は、(　　)という音を加えることを示します。",
+      "correctAnswer": "短7度"
     },
     {
-      "question": "16分音符は全音符の何分の1の長さですか？数字のみで答えてください",
-      "correctAnswer": "16"
+      "question": "「mp」は「(　　)」という意味の強弱記号です。",
+      "correctAnswer": "やや弱くする"
     },
     {
-      "question": "32分音符は全音符の何分の1の長さですか？数字のみで答えてください",
-      "correctAnswer": "32"
+      "question": "音符の長さを2倍にする記号を「(　　)」と呼びます。",
+      "correctAnswer": "タイ"
     },
     {
-      "question": "64分音符は全音符の何分の1の長さですか？数字のみで答えてください",
-      "correctAnswer": "64"
+      "question": "五線の最初に書かれる記号で、音の高さを決める「(　　)」には、ト音記号とヘ音記号があります。",
+      "correctAnswer": "音部記号"
+    },
+    {
+      "question": "「Fine」は楽譜で「(　　)」という意味です。",
+      "correctAnswer": "終わり"
+    },
+    {
+      "question": "楽譜の最初に書かれる「♯（シャープ）」や「♭（フラット）」を「(　　)」と呼びます。",
+      "correctAnswer": "調号"
+    },
+    {
+      "question": "音楽記号の「D.C.」は、楽譜の「(　　)」という指示です。",
+      "correctAnswer": "最初に戻る"
+    },
+    {
+      "question": "3つの音からなる和音を「(　　)」と呼びます。",
+      "correctAnswer": "トライアド"
+    },
+    {
+      "question": "4つの音からなる和音を「(　　)」と呼びます。",
+      "correctAnswer": "フォーボイス"
+    },
+    {
+      "question": "基本的な音程で、「長三度」は(　　)半音分の間隔です。",
+      "correctAnswer": "4"
+    },
+    {
+      "question": "「fermata」（フェルマータ）は、音符や休符を程よく(　　)という指示です。",
+      "correctAnswer": "伸ばす"
+    },
+    {
+      "question": "付点8分音符は、8分音符の(　　)倍の長さです。",
+      "correctAnswer": "1.5"
+    },
+    {
+      "question": " A（ラ）の音から上に長三度の音は(　　)です。",
+      "correctAnswer": "C♯"
+    },
+    {
+      "question": "拍子記号の分母は、基準となる(　　)を表します。",
+      "correctAnswer": "音符の長さ"
+    },
+    {
+      "question": "ナチュラル「♮」は、「♯」や「♭」がついた音をもとの高さに戻す(　　)記号です。",
+      "correctAnswer": "臨時"
+    },
+    {
+      "question": "オーギュメント（aug）コードの構成は、ルート、メジャーサード、(　　)5thです。",
+      "correctAnswer": "増"
+    },
+    {
+      "question": "強拍から次の強拍までの1区切りを(　　)と呼びます。",
+      "correctAnswer": "小節"
     }
   ],
   "audio": [
     {
+      "audioSrc": "audio/A3.wav",
+      "correctAnswer": "A"
+    },
+    {
+      "audioSrc": "audio/A4.wav",
+      "correctAnswer": "A"
+    },
+    {
+      "audioSrc": "audio/As3.wav",
+      "correctAnswer": "A#"
+    },
+    {
+      "audioSrc": "audio/As4.wav",
+      "correctAnswer": "A#"
+    },
+    {
+      "audioSrc": "audio/B3.wav",
+      "correctAnswer": "B"
+    },
+    {
+      "audioSrc": "audio/B4.wav",
+      "correctAnswer": "B"
+    },
+    {
       "audioSrc": "audio/C3.wav",
       "correctAnswer": "C"
+    },
+    {
+      "audioSrc": "audio/C4.wav",
+      "correctAnswer": "C"
+    },
+    {
+      "audioSrc": "audio/Cs3.wav",
+      "correctAnswer": "C#"
+    },
+    {
+      "audioSrc": "audio/Cs4.wav",
+      "correctAnswer": "C#"
     },
     {
       "audioSrc": "audio/D3.wav",
       "correctAnswer": "D"
     },
     {
+      "audioSrc": "audio/D4.wav",
+      "correctAnswer": "D"
+    },
+    {
+      "audioSrc": "audio/Ds3.wav",
+      "correctAnswer": "D#"
+    },
+    {
+      "audioSrc": "audio/Ds4.wav",
+      "correctAnswer": "D#"
+    },
+    {
       "audioSrc": "audio/E3.wav",
+      "correctAnswer": "E"
+    },
+    {
+      "audioSrc": "audio/E4.wav",
       "correctAnswer": "E"
     },
     {
@@ -65,12 +293,32 @@
       "correctAnswer": "F"
     },
     {
+      "audioSrc": "audio/F4.wav",
+      "correctAnswer": "F"
+    },
+    {
+      "audioSrc": "audio/Fs3.wav",
+      "correctAnswer": "F#"
+    },
+    {
+      "audioSrc": "audio/Fs4.wav",
+      "correctAnswer": "F#"
+    },
+    {
       "audioSrc": "audio/G3.wav",
       "correctAnswer": "G"
     },
     {
-      "audioSrc": "audio/A3.wav",
-      "correctAnswer": "A"
+      "audioSrc": "audio/G4.wav",
+      "correctAnswer": "G"
+    },
+    {
+      "audioSrc": "audio/Gs3.wav",
+      "correctAnswer": "G#"
+    },
+    {
+      "audioSrc": "audio/Gs4.wav",
+      "correctAnswer": "G#"
     }
   ],
   "sheet": [
