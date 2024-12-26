@@ -8,9 +8,9 @@
 
         <main style="max-width: 90%; margin: 0 auto;">
             <section class="quiz-container bg-light p-5" style="max-width: 100%;">
-                <h2 class="h4 mb-4">音階当てクイズ</h2>
+                <h2 class="h4 mb-4">音階問題</h2>
                 <div id="quiz-content"></div>
-                <button class="btn btn-primary" id="quiz-submit">回答する</button>
+                <button class="btn btn-primary" id="quiz-submit" disabled>回答する</button>
             </section>
         </main>
     </div>
@@ -26,7 +26,7 @@
         }
     });
 
-    const QUIZ_COUNT = 3; // 表示する問題数を定数で指定
+    const QUIZ_COUNT = 10; // 表示する問題数を定数で指定
     let quizData = null;
     let correctAnswers = {};
 
@@ -70,7 +70,7 @@
 
             const questionElement = document.createElement('p');
             questionElement.className = 'mb-4';
-            questionElement.textContent = `問題 ${index + 1}`;
+            questionElement.textContent = quiz.question;
             section.appendChild(questionElement);
 
             const playButton = document.createElement('button');
@@ -84,7 +84,8 @@
             answerInput.type = 'text';
             answerInput.className = 'form-control mb-4 w-50';
             answerInput.id = `quiz-answer-${index}`;
-            answerInput.placeholder = '音階を入力してください';
+            answerInput.placeholder = '回答を入力してください';
+            answerInput.addEventListener('input', checkAllAnswered); // 入力イベントリスナーを追加
             section.appendChild(answerInput);
 
             container.appendChild(section);
@@ -93,7 +94,7 @@
         });
     }
 
-    // 音声を再生する関数
+        // 音声を再生する関数
     function playAudio(event) {
         const audioFile = event.target.dataset.audioFile;
         console.log('再生する音声ファイル:', audioFile);
@@ -107,20 +108,62 @@
         }
     }
 
-    function submitAnswers() {
-        let correctCount = 0;
-
+    function checkAllAnswered() {
+        let allAnswered = true;
         for (let index = 0; index < QUIZ_COUNT; index++) {
             const answerInput = document.getElementById(`quiz-answer-${index}`);
-            // console.log('回答:', answerInput?.value);
-            // console.log('正解:', correctAnswers[index]);
-            if (answerInput && answerInput.value.trim() === correctAnswers[index]) {
-                correctCount++;
+            if (!answerInput || answerInput.value.trim() === '') {
+                allAnswered = false;
+                break;
             }
         }
 
-        // 結果を表示
-        alert(`正解数: ${correctCount} / ${QUIZ_COUNT}`);
+        const submitButton = document.getElementById('quiz-submit');
+        if (submitButton) {
+            submitButton.disabled = !allAnswered;
+        }
+    }
+
+    function submitAnswers() {
+        const inputAnswers = {};
+        let allAnswered = true;
+
+        for (let index = 0; index < QUIZ_COUNT; index++) {
+            const answerInput = document.getElementById(`quiz-answer-${index}`);
+            if (answerInput) {
+                inputAnswers[index] = answerInput.value.trim();
+            } else {
+                allAnswered = false;
+                break;
+            }
+        }
+
+        if (!allAnswered) {
+            alert('すべての質問に回答してください。');
+            return;
+        }
+
+        console.log('回答:', inputAnswers);
+        showResultsAlert(inputAnswers);
+    }
+
+    function showResultsAlert(inputAnswers) {
+        const totalQuestions = QUIZ_COUNT;
+        let correctCount = 0;
+        let detailedResults = '';
+
+        for (let i = 0; i < QUIZ_COUNT; i++) {
+            if (inputAnswers[i] === correctAnswers[i]) {
+                correctCount++;
+                detailedResults += `質問 ${i + 1}: 正解 (あなたの回答: ${inputAnswers[i]})\n`;
+            } else {
+                detailedResults += `質問 ${i + 1}: 不正解 (あなたの回答: ${inputAnswers[i]}, 正解: ${correctAnswers[i]})\n`;
+            }
+        }
+
+        const resultMessage = `正解数: ${correctCount} / ${totalQuestions}\n\n詳細結果:\n${detailedResults}`;
+
+        alert(resultMessage);
     }
 </script>
 </body>

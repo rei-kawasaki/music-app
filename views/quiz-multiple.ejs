@@ -1,138 +1,152 @@
 <!DOCTYPE html>
 <html lang="ja">
 <%- include('partials/head') %>
-<body>
-    <div class="container mt-5">
-        <%- include('partials/header') %>
-        <%- include('partials/nav') %>
 
-        <main style="max-width: 90%; margin: 0 auto;">
-            <section class="quiz-container bg-light p-5" style="max-width: 100%;">
-                <h2 class="h4 mb-4">4択問題</h2>
-                <div id="quiz-content"></div>
-                <button class="btn btn-primary" id="quiz-submit">回答する</button>
-            </section>
-        </main>
-    </div>
+    <body>
+        <div class="container mt-5">
+            <%- include('partials/header') %>
+                <%- include('partials/nav') %>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initQuiz();
-                setupEventListeners();
-            } catch (error) {
-                console.error('初期化に失敗:', error);
-            }
-        });
+                    <main style="max-width: 90%; margin: 0 auto;">
+                        <section class="quiz-container bg-light p-5" style="max-width: 100%;">
+                            <h2 class="h4 mb-4">4択問題</h2>
+                            <p>ページリロードすると問題が更新されます．</p>
+                            <div id="quiz-content" class="mt-5"></div>
+                            <button class="btn btn-primary" id="quiz-submit">回答する</button>
+                        </section>
+                    </main>
+        </div>
 
-        let quizData = null;
-        const QUIZ_COUNT = 3;
-        const correctAnswers = {};
-
-        async function initQuiz() {
-            try {
-                const response = await fetch('/quiz-data.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    await initQuiz();
+                    setupEventListeners();
+                } catch (error) {
+                    console.error('初期化に失敗:', error);
                 }
-                quizData = await response.json();
-                displayQuizzes();
-            } catch (error) {
-                console.error('クイズデータの取得に失敗:', error);
+            });
+
+            let quizData = null;
+            const QUIZ_COUNT = 10;
+            const correctAnswers = {};
+
+            async function initQuiz() {
+                try {
+                    const response = await fetch('/quiz-data.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    quizData = await response.json();
+                    displayQuizzes();
+                } catch (error) {
+                    console.error('クイズデータの取得に失敗:', error);
+                }
             }
-        }
 
-        function getRandomQuizzes(quizzes, count) {
-            return quizzes.sort(() => 0.5 - Math.random()).slice(0, count);
-        }
-
-        function setupEventListeners() {
-            const submitButton = document.getElementById('quiz-submit');
-            if (submitButton && !submitButton.dataset.listenerAdded) {
-                submitButton.addEventListener('click', submitAnswers);
-                submitButton.dataset.listenerAdded = 'true';
+            function getRandomQuizzes(quizzes, count) {
+                return quizzes.sort(() => 0.5 - Math.random()).slice(0, count);
             }
-        }
 
-        function displayQuizzes() {
-            if (!quizData?.multiple) return;
+            function setupEventListeners() {
+                const submitButton = document.getElementById('quiz-submit');
+                if (submitButton && !submitButton.dataset.listenerAdded) {
+                    submitButton.addEventListener('click', submitAnswers);
+                    submitButton.dataset.listenerAdded = 'true';
+                }
+            }
 
-            const quizzes = getRandomQuizzes(quizData.multiple, QUIZ_COUNT);
-            const container = document.getElementById('quiz-content');
-            if (!container) return;
+            function displayQuizzes() {
+                if (!quizData?.multiple) return;
 
-            container.innerHTML = ''; // 既存のクイズをクリア
+                const quizzes = getRandomQuizzes(quizData.multiple, QUIZ_COUNT);
+                const container = document.getElementById('quiz-content');
+                if (!container) return;
 
-            quizzes.forEach((quiz, index) => {
-                const questionElement = document.createElement('p');
-                questionElement.id = `quiz-question-${index}`;
-                questionElement.className = 'mb-4';
-                questionElement.innerHTML = quiz.question.replace(/\n/g, '<br>');
-                container.appendChild(questionElement);
+                container.innerHTML = ''; // 既存のクイズをクリア
 
-                const choices = ['A', 'B', 'C', 'D'];
-                const choicesContainer = document.createElement('div');
-                choicesContainer.id = `quiz-choices-${index}`;
-                choicesContainer.className = 'mb-4';
-                container.appendChild(choicesContainer);
+                quizzes.forEach((quiz, index) => {
+                    const questionElement = document.createElement('p');
+                    questionElement.id = `quiz-question-${index}`;
+                    questionElement.className = 'mb-4';
+                    questionElement.innerHTML = quiz.question.replace(/\n/g, '<br>');
+                    container.appendChild(questionElement);
 
-                choices.forEach(choice => {
-                    const button = document.createElement('button');
-                    button.className = 'btn btn-outline-primary btn-sm me-2';
-                    button.textContent = choice;
-                    // 選択肢がクリックされたときの処理を追加
-                    button.addEventListener('click', () => handleChoiceSelection(index, button));
-                    choicesContainer.appendChild(button);
+                    const choices = ['A', 'B', 'C', 'D'];
+                    const choicesContainer = document.createElement('div');
+                    choicesContainer.id = `quiz-choices-${index}`;
+                    choicesContainer.className = 'mb-4';
+                    container.appendChild(choicesContainer);
+
+                    choices.forEach(choice => {
+                        const button = document.createElement('button');
+                        button.className = 'btn btn-outline-primary btn-sm me-2';
+                        button.textContent = choice;
+                        // 選択肢がクリックされたときの処理を追加
+                        button.addEventListener('click', () => handleChoiceSelection(index, button));
+                        choicesContainer.appendChild(button);
+                    });
+                    // 正解を保存
+                    correctAnswers[index] = quiz.correctAnswer;
                 });
-                // 正解を保存
-                correctAnswers[index] = quiz.correctAnswer;
-            });
-        }
-
-        // 選択肢が選ばれた際の処理
-        function handleChoiceSelection(quizIndex, button) {
-            const buttons = document.querySelectorAll(`#quiz-choices-${quizIndex} button`);
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                btn.classList.add('btn-outline-primary');
-                btn.classList.remove('btn-primary');
-            });
-            button.classList.add('active');
-            button.classList.remove('btn-outline-primary');
-            button.classList.add('btn-primary');
-        }
-
-        function submitAnswers() {
-            const inputAnswers = {};
-            for (let index = 0; index < QUIZ_COUNT; index++) {
-                const selectedButton = document.querySelector(`#quiz-choices-${index} .btn-primary.active`);
-                if (selectedButton) {
-                    inputAnswers[index] = selectedButton.textContent;
-                }
             }
 
-            console.log('回答:', inputAnswers);
-            showResultsAlert(inputAnswers);
-        }
-
-        function showResultsAlert(inputAnswers) {
-            const totalQuestions = QUIZ_COUNT;
-            let correctCount = 0;
-
-            for (let i = 0; i < QUIZ_COUNT; i++) {
-                if (inputAnswers[i] === correctAnswers[i]) {
-                    correctCount++;
-                }
+            // 選択肢が選ばれた際の処理
+            function handleChoiceSelection(quizIndex, button) {
+                const buttons = document.querySelectorAll(`#quiz-choices-${quizIndex} button`);
+                buttons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.add('btn-outline-primary');
+                    btn.classList.remove('btn-primary');
+                });
+                button.classList.add('active');
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-primary');
             }
 
-            const resultMessage = `
-                あなたの回答: ${JSON.stringify(inputAnswers)}
-                正解数: ${correctCount} / ${totalQuestions}
-            `;
+            function submitAnswers() {
+                const inputAnswers = {};
+                let allAnswered = true;
 
-            alert(resultMessage);
-        }
-    </script>
-</body>
+                for (let index = 0; index < QUIZ_COUNT; index++) {
+                    const selectedButton = document.querySelector(`#quiz-choices-${index} .btn-primary.active`);
+                    if (selectedButton) {
+                        inputAnswers[index] = selectedButton.textContent;
+                    } else {
+                        allAnswered = false;
+                        break;
+                    }
+                }
+
+                if (!allAnswered) {
+                    alert('すべての質問に回答してください。');
+                    return;
+                }
+
+                console.log('回答:', inputAnswers);
+                showResultsAlert(inputAnswers);
+            }
+            function showResultsAlert(inputAnswers) {
+                const totalQuestions = QUIZ_COUNT;
+                let correctCount = 0;
+                let detailedResults = '';
+
+                for (let i = 0; i < QUIZ_COUNT; i++) {
+                    if (inputAnswers[i] === correctAnswers[i]) {
+                        correctCount++;
+                        detailedResults += `質問 ${i + 1}: 正解 (あなたの回答: ${inputAnswers[i]})\n`;
+                    } else {
+                        detailedResults += `質問 ${i + 1}: 不正解 (あなたの回答: ${inputAnswers[i]}, 正解: ${correctAnswers[i]})\n`;
+                    }
+                    //detailedResults += '\n';
+                }
+
+                const resultMessage = `正解数: ${correctCount} / ${totalQuestions}\n\n詳細結果:\n${detailedResults}`;
+
+                alert(resultMessage);
+            }
+        </script>
+    </body>
+
 </html>
